@@ -6,23 +6,22 @@ using TMPro;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement")]
-    public float moveSpeed;
+    private const float moveSpeed = 5f;
+    private const float groundDrag = 8f;
 
-    public float groundDrag;
-
-    public float jumpForce;
-    public float jumpCooldown;
-    public float airMultiplier;
+    private const float jumpForce = 5.5f;
+    private float jumpCooldown;
+    private const float airMultiplier = 0.9f;
     bool readyToJump;
 
-    [HideInInspector] public float walkSpeed;
-    [HideInInspector] public float sprintSpeed;
+    public float walkSpeed;
+    public float sprintSpeed;
 
     [Header("Keybinds")]
-    public KeyCode jumpKey = KeyCode.Space;
+    private KeyCode jumpKey = KeyCode.Space;
 
     [Header("Ground Check")]
-    public float playerHeight;
+    private float playerHeight = 2;
     public LayerMask whatIsGround;
     bool grounded;
 
