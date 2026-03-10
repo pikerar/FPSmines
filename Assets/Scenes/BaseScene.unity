@@ -1876,14 +1876,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 929575ccff20dc14ca04a99aeec8f082, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundDrag: 1
-  jumpForce: 5.5
-  jumpCooldown: 0.25
-  airMultiplier: 0.9
   walkSpeed: 0
   sprintSpeed: 0
-  jumpKey: 32
-  playerHeight: 2
   whatIsGround:
     serializedVersion: 2
     m_Bits: 4294967295
