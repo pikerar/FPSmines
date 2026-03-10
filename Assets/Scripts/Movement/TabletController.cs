@@ -10,6 +10,9 @@ public class TabletController : MonoBehaviour
     private Quaternion originalRotation;
     private Transform originalParent;
 
+    // Публичное свойство для проверки состояния планшета
+    public bool IsTabletActive => tabletActive;
+
     void Start()
     {
         // Сохраняем оригинальное положение планшета
@@ -53,8 +56,6 @@ public class TabletController : MonoBehaviour
             tabletObject.transform.rotation = holdPoint.rotation;
             tabletObject.transform.SetParent(holdPoint);
             tabletActive = true;
-
-            
         }
     }
 
@@ -68,7 +69,6 @@ public class TabletController : MonoBehaviour
             tabletObject.transform.rotation = originalRotation;
             tabletObject.SetActive(false);
             tabletActive = false;
-
         }
     }
 }
