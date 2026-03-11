@@ -3,16 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 
 /// <summary>
-/// HUD интерфейс: счётчик флагов + подсказки по управлению.
-/// 
-/// Настройка Canvas:
-/// 1. Canvas (Screen Space — Overlay)
-///    ├── FlagPanel (Image, угол экрана)
-///    │   ├── FlagIcon (Image)
-///    │   └── FlagCountText (TextMeshProUGUI) ← назначь в Inspector
-///    └── HintText (TextMeshProUGUI) ← назначь в Inspector
-/// 
-/// Прикрепи этот скрипт на тот же Canvas или отдельный GameObject.
+/// HUD интерфейс
 /// </summary>
 public class MinefieldHUD : MonoBehaviour
 {
@@ -49,30 +40,19 @@ public class MinefieldHUD : MonoBehaviour
 
     void Start()
     {
-        // Переподписываемся в Start — к этому моменту все Awake уже выполнены
-        // и FlagInventory.Instance гарантированно существует
         if (FlagInventory.Instance != null)
         {
             FlagInventory.Instance.onFlagsChanged.RemoveListener(UpdateFlagCount);
             FlagInventory.Instance.onFlagsChanged.AddListener(UpdateFlagCount);
             UpdateFlagCount(FlagInventory.Instance.CurrentFlags);
         }
-        else
-        {
-            Debug.LogWarning("[MinefieldHUD] FlagInventory не найден! Проверь что GameManager с компонентом FlagInventory есть на сцене.");
-        }
-
         SetHint("");
     }
 
-    // -------------------------------------------------------
-    // Вызывается PlayerInteraction каждый кадр
-    // -------------------------------------------------------
     public void UpdateHoverHint(MineCell mine, FlagBox box)
     {
         if (mine != null && !mine.isRevealed)
         {
-            // Если флагов нет и хотим поставить — доп. подсказка
             bool hasFlags = FlagInventory.Instance != null && FlagInventory.Instance.CurrentFlags > 0;
             if (!hasFlags && !mine.isFlagged)
                 SetHint($"ЛКМ — детонация  /  {noFlagsHint}");
@@ -89,9 +69,6 @@ public class MinefieldHUD : MonoBehaviour
         }
     }
 
-    // -------------------------------------------------------
-    // Обновление счётчика флагов
-    // -------------------------------------------------------
     void UpdateFlagCount(int count)
     {
         if (flagCountText != null)

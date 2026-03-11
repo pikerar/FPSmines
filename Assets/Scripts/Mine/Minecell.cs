@@ -2,8 +2,7 @@ using UnityEngine;
 using TMPro;
 
 /// <summary>
-/// Прикрепляется к каждому префабу мины.
-/// value: 0-8 = количество мин вокруг, 9 = сама мина
+/// Как я горд тем, что я додумался до этого))))0
 /// </summary>
 public class MineCell : MonoBehaviour
 {
@@ -15,29 +14,27 @@ public class MineCell : MonoBehaviour
     public TextMeshPro skyText;      // текст парящий над миной
 
     [Header("Объект флага на мине")]
-    public GameObject flagObject;    // показывается при установке флага
+    public GameObject flagObject;
 
     [Header("Состояние")]
     public bool isRevealed = false;
     public bool isFlagged = false;
 
-    // Цвета цифр как в классическом сапёре
     private static readonly Color[] numberColors = new Color[]
     {
-        Color.white,        // 0
-        Color.blue,         // 1
-        Color.green,        // 2
-        Color.red,          // 3
+        Color.white,        // 0 белый
+        Color.blue,         // 1 синий
+        Color.green,        // 2 зеленый
+        Color.red,          // 3 красный
         new Color(0f, 0f, 0.5f),    // 4 тёмно-синий
         new Color(0.5f, 0f, 0f),    // 5 тёмно-красный
-        Color.cyan,         // 6
-        Color.black,        // 7
-        Color.gray          // 8
+        Color.cyan,         // 6 голубой
+        Color.black,        // 7 черный
+        Color.gray          // 8 соболезную...
     };
 
-    void Start()
+    void Start() // на старте все 3 окна отсутствуют, при взаимодействии они отображаются
     {
-        // Скрываем тексты до взаимодействия
         if (screenText != null) screenText.text = "";
         if (skyText != null) skyText.text = "";
         if (flagObject != null) flagObject.SetActive(false);
@@ -45,6 +42,7 @@ public class MineCell : MonoBehaviour
 
     /// <summary>
     /// Вызывается минным полем после расчёта матрицы
+    /// Т.е. перекид данных с минного поля в каждую отдельную мину
     /// </summary>
     public void SetValue(int val)
     {
@@ -52,7 +50,7 @@ public class MineCell : MonoBehaviour
     }
 
     /// <summary>
-    /// ЛКМ — открыть ячейку
+    /// Взаимодействие с миной на ЛКМ
     /// </summary>
     public void Reveal()
     {
@@ -62,13 +60,12 @@ public class MineCell : MonoBehaviour
 
         if (value == 9)
         {
-            // Взрыв!
+            // анлак
             Explode();
             return;
         }
 
-        // Показываем число (0 показываем как пустоту или тоже отображаем)
-        string display = value == 0 ? "" : value.ToString();
+        string display = value.ToString();
         Color col = value > 0 && value <= 8 ? numberColors[value] : Color.white;
 
         if (screenText != null)
@@ -84,7 +81,7 @@ public class MineCell : MonoBehaviour
     }
 
     /// <summary>
-    /// ПКМ — поставить/снять флаг
+    /// Взаимодействие с миной на ПКМ
     /// </summary>
     /// <returns>true если флаг поставлен, false если снят</returns>
     public bool ToggleFlag()
@@ -101,20 +98,20 @@ public class MineCell : MonoBehaviour
 
     private void Explode()
     {
-        Debug.Log("ВЗРЫВ! Переход на экран конца игры.");
-        // Небольшая задержка для эффектов если нужно
-        GameManager.Instance?.TriggerGameOver();
+        // сюда же добавить звук, и мб визуал
+        GameManager.Instance?.TriggerGameOver(); // или во внутрь
+        // или сюда
     }
 
     /// <summary>
-    /// Открыть без анимации (для авто-раскрытия нулей)
+    /// Авто открытие нулей
     /// </summary>
     public void RevealSilent()
     {
         if (isRevealed || isFlagged) return;
         isRevealed = true;
 
-        string display = value == 0 ? "" : value.ToString();
+        string display = value.ToString();
         Color col = value > 0 && value <= 8 ? numberColors[value] : Color.white;
 
         if (screenText != null) { screenText.text = display; screenText.color = col; }

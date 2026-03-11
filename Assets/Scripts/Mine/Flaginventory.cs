@@ -2,22 +2,21 @@ using UnityEngine;
 using UnityEngine.Events;
 
 /// <summary>
-/// Синглтон инвентаря флагов.
-/// Помести на любой постоянный GameObject (например GameManager).
+/// Синглтон инвентаря флагов
+/// Накинуть на геймменеджер и усё
 /// </summary>
 public class FlagInventory : MonoBehaviour
 {
     public static FlagInventory Instance { get; private set; }
 
     [Header("Начальное количество флагов")]
-    public int startingFlags = 5;
+    public int startingFlags = 2;
 
     [Header("Максимальный запас")]
-    public int maxFlags = 20;
+    public int maxFlags = 5;
 
     public int CurrentFlags { get; private set; }
 
-    // Событие для UI — подписывается HUD
     public UnityEvent<int> onFlagsChanged = new UnityEvent<int>();
 
     void Awake()
@@ -28,12 +27,11 @@ public class FlagInventory : MonoBehaviour
             return;
         }
         Instance = this;
-        // Инициализируем в Awake — до любого Start в других скриптах
         CurrentFlags = startingFlags;
     }
 
     /// <summary>
-    /// Потратить 1 флаг. Возвращает true если успешно.
+    /// потратить 1 флаг, возврат тру при успехе
     /// </summary>
     public bool UseFlag()
     {
@@ -44,7 +42,7 @@ public class FlagInventory : MonoBehaviour
     }
 
     /// <summary>
-    /// Вернуть 1 флаг (когда снимают флаг с мины).
+    /// вернуть 1 флаг снятый с мины, но не больше максимума
     /// </summary>
     public void ReturnFlag()
     {
@@ -53,7 +51,7 @@ public class FlagInventory : MonoBehaviour
     }
 
     /// <summary>
-    /// Пополнить из ящика. Возвращает реально добавленное кол-во.
+    /// пополнение флагов из ящика, но не больше максимума
     /// </summary>
     public int AddFlags(int amount)
     {

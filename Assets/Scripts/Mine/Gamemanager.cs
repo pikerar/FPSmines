@@ -2,18 +2,17 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// Глобальный менеджер игры.
-/// Помести на постоянный GameObject в сцене.
-/// Добавь FlagInventory на тот же объект.
+/// Глобальный менеджер игры
+/// Накинуть на геймменеджер и усё
 /// </summary>
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
     [Header("Имя сцены экрана конца игры")]
-    public string gameOverSceneName = "GameOver";
+    public string gameOverSceneName = "EndGame";
 
-    [Header("Задержка перед переходом на GameOver (сек)")]
+    [Header("Задержка перед переходом на EndGame (сек)")]
     public float gameOverDelay = 1.5f;
 
     private bool gameEnded = false;
@@ -22,7 +21,6 @@ public class GameManager : MonoBehaviour
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 
     /// <summary>
@@ -33,28 +31,24 @@ public class GameManager : MonoBehaviour
         if (gameEnded) return;
         gameEnded = true;
 
-        Debug.Log("[GameManager] GAME OVER!");
-
-        // Показать все мины
-        RevealAllMines();
-
-        // Перейти на экран конца через задержку
         Invoke(nameof(LoadGameOverScene), gameOverDelay);
     }
 
-    void RevealAllMines()
-    {
-        // Раскрываем все взрывоопасные мины для наглядности
-        MineCell[] allCells = FindObjectsOfType<MineCell>();
-        foreach (var cell in allCells)
-        {
-            if (cell.value == 9 && !cell.isRevealed)
-            {
-                cell.RevealSilent();
-            }
-        }
-    }
+    //void RevealAllMines()
+    //{
+    //    MineCell[] allCells = FindObjectsOfType<MineCell>();
+    //    foreach (var cell in allCells)
+    //    {
+    //        if (cell.value == 9 && !cell.isRevealed)
+    //        {
+    //            cell.RevealSilent();
+    //        }
+    //    }
+    //}
 
+    /// <summary>
+    /// Переход на экран эндгейма при проигрыше
+    /// </summary>
     void LoadGameOverScene()
     {
         Cursor.lockState = CursorLockMode.None;

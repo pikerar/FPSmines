@@ -1,7 +1,6 @@
 using UnityEngine;
 
 /// <summary>
-/// Прикрепи к камере игрока (или к самому игроку с камерой).
 /// Обрабатывает ЛКМ/ПКМ по минам и наведение на объекты.
 /// </summary>
 public class PlayerInteraction : MonoBehaviour
@@ -12,10 +11,8 @@ public class PlayerInteraction : MonoBehaviour
     [Header("Камера (если не назначена — ищет Camera.main)")]
     public Camera playerCamera;
 
-    // Ссылки для передачи событий
     private Minefield minefield;
 
-    // Текущий объект под прицелом
     private MineCell hoveredMine;
     private FlagBox hoveredBox;
 
@@ -31,9 +28,6 @@ public class PlayerInteraction : MonoBehaviour
         HandleInput();
     }
 
-    // -------------------------------------------------------
-    // Рейкаст каждый кадр
-    // -------------------------------------------------------
     void HandleRaycast()
     {
         Ray ray = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f, 0));
@@ -48,7 +42,6 @@ public class PlayerInteraction : MonoBehaviour
             if (newMine == null) newBox = hit.collider.GetComponentInParent<FlagBox>();
         }
 
-        // Обновляем hover-состояние
         if (newMine != hoveredMine)
         {
             hoveredMine = newMine;
@@ -58,13 +51,9 @@ public class PlayerInteraction : MonoBehaviour
             hoveredBox = newBox;
         }
 
-        // Сообщаем HUD что под прицелом
         MinefieldHUD.Instance?.UpdateHoverHint(hoveredMine, hoveredBox);
     }
 
-    // -------------------------------------------------------
-    // Клики
-    // -------------------------------------------------------
     void HandleInput()
     {
         if (hoveredMine != null)
