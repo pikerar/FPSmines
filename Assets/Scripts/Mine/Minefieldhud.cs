@@ -2,18 +2,21 @@
 using UnityEngine.UI;
 using TMPro;
 
-/// <summary>
-/// HUD интерфейс: счётчик флагов + подсказки по управлению.
-/// </summary>
 public class MinefieldHUD : MonoBehaviour
 {
     public static MinefieldHUD Instance { get; private set; }
 
-    [Header("Счётчик флагов")]
-    public TextMeshProUGUI flagCountText;
+    [Header("Счётчик флагов в инвентаре")]
+    [SerializeField] private TextMeshProUGUI flagCountText;
 
-    [Header("Текст подсказки (по центру низа или где угодно)")]
-    public TextMeshProUGUI hintText;
+    [Header("Счётчик мин на поле (появляется при входе в зону)")]
+    [SerializeField] private GameObject mineCounterPanel;
+    [SerializeField] private TextMeshProUGUI mineCountText;
+    [SerializeField] private TextMeshProUGUI mineCounterLabel;
+    [SerializeField] private TextMeshProUGUI fieldStatusText;
+
+    [Header("Текст подсказки")]
+    [SerializeField] private TextMeshProUGUI hintText;
 
     [Header("Тексты подсказок")]
     [SerializeField] private string mineHint = "ЛКМ — детонация  /  ПКМ — поставить флаг";
@@ -21,6 +24,13 @@ public class MinefieldHUD : MonoBehaviour
     [SerializeField] private string mineNoFlagsHint = "ЛКМ — детонация  /  Флагов нет";
     [SerializeField] private string boxHint = "E — забрать флаги";
     [SerializeField] private string boxEmptyHint = "Флагов нет";
+
+    [Header("Цвета счётчика мин")]
+    [SerializeField] private Color colorNormal = Color.white;
+    [SerializeField] private Color colorError = Color.red;
+    [SerializeField] private Color colorCleared = Color.green;
+
+    private Minefield currentField;
 
     void Awake()
     {
@@ -48,41 +58,90 @@ public class MinefieldHUD : MonoBehaviour
             FlagInventory.Instance.onFlagsChanged.AddListener(UpdateFlagCount);
             UpdateFlagCount(FlagInventory.Instance.CurrentFlags);
         }
+
+        if (mineCounterPanel != null) mineCounterPanel.SetActive(false);
         SetHint("");
     }
 
     // -------------------------------------------------------
-    // Вызывается PlayerInteraction каждый кадр
+    // Счётчик мин — вызывается MinefieldZone
     // -------------------------------------------------------
+
+    public void ShowMineCounter(Minefield field)
+    {
+        currentField = field;
+
+        if (mineCounterPanel != null)
+        {
+            mineCounterPanel.SetActive(true);
+            Debug.Log("[MinefieldHUD] MineCounterPanel активирован");
+        }
+
+        UpdateMineCounter(field);
+    }
+
+    public void HideMineCounter()
+    {
+        currentField = null;
+        if (mineCounterPanel != null) mineCounterPanel.SetActive(false);
+    }
+
+    /// <summary>
+    /// Вызывается из Minefield.CheckProgress() при каждом изменении
+    /// </summary>
+    public void UpdateMineCounter(Minefield field)
+    {
+        if (field != currentField) return;
+        if (mineCountText == null) return;
+
+        int flagged = field.TotalFlaggedCells;
+        int total = field.TotalDangerousMines;
+
+        mineCountText.text = $"{flagged} / {total}";
+
+        if (field.IsCleared)
+        {
+            mineCountText.color = colorCleared;
+            if (fieldStatusText != null) { fieldStatusText.text = "Решено!"; fieldStatusText.color = colorCleared; }
+        }
+        else if (flagged > total)
+        {
+            mineCountText.color = colorError;
+            if (fieldStatusText != null) { fieldStatusText.text = "Ошибка!"; fieldStatusText.color = colorError; }
+        }
+        else
+        {
+            mineCountText.color = colorNormal;
+            if (fieldStatusText != null) fieldStatusText.text = "";
+        }
+    }
+
+    // -------------------------------------------------------
+    // Подсказки при наведении
+    // -------------------------------------------------------
+
     public void UpdateHoverHint(MineCell mine, FlagBox box)
     {
         if (mine != null && !mine.isRevealed)
         {
             if (mine.isFlagged)
-            {
-                // На мине стоит флаг - только убрать
                 SetHint(mineFlaggedHint);
-            }
             else
             {
-                // Флагов в инвентаре нет — нельзя поставить
                 bool hasFlags = FlagInventory.Instance != null && FlagInventory.Instance.CurrentFlags > 0;
                 SetHint(hasFlags ? mineHint : mineNoFlagsHint);
             }
         }
         else if (box != null)
-        {
             SetHint(box.FlagsRemaining > 0 ? boxHint : boxEmptyHint);
-        }
         else
-        {
             SetHint("");
-        }
     }
 
     // -------------------------------------------------------
-    // Обновление счётчика флагов
+    // Вспомогательные
     // -------------------------------------------------------
+
     void UpdateFlagCount(int count)
     {
         if (flagCountText != null)
