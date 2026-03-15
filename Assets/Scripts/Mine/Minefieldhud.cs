@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 
 /// <summary>
-/// HUD интерфейс
+/// HUD интерфейс: счётчик флагов + подсказки по управлению.
 /// </summary>
 public class MinefieldHUD : MonoBehaviour
 {
@@ -16,9 +16,11 @@ public class MinefieldHUD : MonoBehaviour
     public TextMeshProUGUI hintText;
 
     [Header("Тексты подсказок")]
-    public string mineHint = "ЛКМ — детонация  /  ПКМ — поставить флаг";
-    public string boxHint = "E — пополнить флаги";
-    public string noFlagsHint = "Флагов нет! Найди ящик с флагами";
+    [SerializeField] private string mineHint = "ЛКМ — детонация  /  ПКМ — поставить флаг";
+    [SerializeField] private string mineFlaggedHint = "ЛКМ — убрать флаг";
+    [SerializeField] private string mineNoFlagsHint = "ЛКМ — детонация  /  Флагов нет";
+    [SerializeField] private string boxHint = "E — забрать флаги";
+    [SerializeField] private string boxEmptyHint = "Флагов нет";
 
     void Awake()
     {
@@ -49,19 +51,28 @@ public class MinefieldHUD : MonoBehaviour
         SetHint("");
     }
 
+    // -------------------------------------------------------
+    // Вызывается PlayerInteraction каждый кадр
+    // -------------------------------------------------------
     public void UpdateHoverHint(MineCell mine, FlagBox box)
     {
         if (mine != null && !mine.isRevealed)
         {
-            bool hasFlags = FlagInventory.Instance != null && FlagInventory.Instance.CurrentFlags > 0;
-            if (!hasFlags && !mine.isFlagged)
-                SetHint($"ЛКМ — детонация  /  {noFlagsHint}");
+            if (mine.isFlagged)
+            {
+                // На мине стоит флаг - только убрать
+                SetHint(mineFlaggedHint);
+            }
             else
-                SetHint(mineHint);
+            {
+                // Флагов в инвентаре нет — нельзя поставить
+                bool hasFlags = FlagInventory.Instance != null && FlagInventory.Instance.CurrentFlags > 0;
+                SetHint(hasFlags ? mineHint : mineNoFlagsHint);
+            }
         }
         else if (box != null)
         {
-            SetHint(boxHint);
+            SetHint(box.FlagsRemaining > 0 ? boxHint : boxEmptyHint);
         }
         else
         {
@@ -69,10 +80,13 @@ public class MinefieldHUD : MonoBehaviour
         }
     }
 
+    // -------------------------------------------------------
+    // Обновление счётчика флагов
+    // -------------------------------------------------------
     void UpdateFlagCount(int count)
     {
         if (flagCountText != null)
-            flagCountText.text = $"Flags: {count}";
+            flagCountText.text = $"Флаги: {count}";
     }
 
     void SetHint(string text)

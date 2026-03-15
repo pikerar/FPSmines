@@ -9,9 +9,9 @@ public class PlayerMovement : MonoBehaviour
     private const float moveSpeed = 5f;
     private const float groundDrag = 8f;
 
-    private const float jumpForce = 5.5f;
-    private float jumpCooldown;
-    private const float airMultiplier = 0.9f;
+    private const float jumpForce = 7.0f;
+    private float jumpCooldown = 0.9f;
+    private const float airMultiplier = 0.5f;
     bool readyToJump;
 
     public float walkSpeed;
@@ -38,8 +38,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+
 
         readyToJump = true;
     }

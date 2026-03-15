@@ -2,19 +2,28 @@ using UnityEngine;
 using System.Collections.Generic;
 
 /// <summary>
-/// Минное поле — считывает все дочерние мины (объеты внутри родительского объекта с этим скриптом),
+/// Минное поле — считывает все дочерние MineCell,
 /// строит матрицу, расставляет значения и обрабатывает клики игрока.
-/// кароче можно сделать вручную расстановку мин, а можно фулл генерируемую
+/// 
+/// Настройка в редакторе:
+/// 1. Создай пустой GameObject "Minefield"
+/// 2. Расставь префабы мин внутри него как дочерние объекты
+/// 3. Помечай мины которые должны быть взрывоопасными через Inspector (isMine = true)
+///    ИЛИ задай mineCount и скрипт расставит мины случайно
 /// </summary>
 public class Minefield : MonoBehaviour
 {
     [Header("Настройка поля")]
+    [Tooltip("Если true — мины расставляются случайно по mineCount. " +
+             "Если false — читает компонент MineCell.value == 9 из сцены.")]
     public bool randomizeMines = false;
-    public int mineCount = 10; //кол-во взрывоопасных мин 
+    public int mineCount = 10;
 
     [Header("Радиус соседства (единицы Unity)")]
-    public float neighborRadius = 3.1f;
+    [Tooltip("Две ячейки считаются соседями если расстояние между ними меньше этого значения")]
+    public float neighborRadius = 1.6f;
 
+    // Все ячейки поля
     private List<MineCell> cells = new List<MineCell>();
 
     void Awake()
@@ -24,16 +33,22 @@ public class Minefield : MonoBehaviour
         CalculateValues();
     }
 
+    // -------------------------------------------------------
+    // Инициализация
+    // -------------------------------------------------------
+
     void CollectCells()
     {
         cells.Clear();
+        // Берём все MineCell среди дочерних (включая вложенные)
         MineCell[] found = GetComponentsInChildren<MineCell>();
         cells.AddRange(found);
-        Debug.Log($"[Minefield] найдено мин: {cells.Count}");
+        Debug.Log($"[Minefield] Найдено ячеек: {cells.Count}");
     }
 
     void PlaceRandomMines()
     {
+        // Сбрасываем всё
         foreach (var c in cells) c.SetValue(0);
 
         int placed = 0;
@@ -50,13 +65,14 @@ public class Minefield : MonoBehaviour
                 placed++;
             }
         }
+        Debug.Log($"[Minefield] Расставлено мин: {placed}");
     }
 
     void CalculateValues()
     {
         foreach (var cell in cells)
         {
-            if (cell.value == 9) continue;
+            if (cell.value == 9) continue; // уже мина
 
             int count = 0;
             foreach (var neighbor in GetNeighbors(cell))
@@ -79,19 +95,29 @@ public class Minefield : MonoBehaviour
         return result;
     }
 
+    // -------------------------------------------------------
+    // Взаимодействие (вызывается из PlayerInteraction)
+    // -------------------------------------------------------
+
     /// <summary>
     /// ЛКМ по мине
     /// </summary>
     public void OnLeftClick(MineCell cell)
     {
-        if (cell.isRevealed || cell.isFlagged) return;
+        if (cell.isRevealed) return;
+
+        // Если на мине флаг — ЛКМ его снимает
+        if (cell.isFlagged)
+        {
+            cell.ToggleFlag();
+            FlagInventory.Instance?.ReturnFlag();
+            return;
+        }
 
         cell.Reveal();
 
-        if (cell.value == 0 && !cell.isFlagged)
-        {
+        if (cell.value == 0)
             FloodReveal(cell);
-        }
     }
 
     /// <summary>
@@ -106,21 +132,28 @@ public class Minefield : MonoBehaviour
 
         if (!cell.isFlagged)
         {
+            // Пытаемся поставить флаг
             if (inventory.UseFlag())
             {
                 cell.ToggleFlag();
             }
             else
             {
-                // вывод уведомления что нет флагов   
+                Debug.Log("[Minefield] Флагов нет! Иди к ящику.");
+                // Можно показать UI-подсказку
             }
         }
         else
         {
+            // Снимаем флаг — возвращаем в инвентарь
             cell.ToggleFlag();
             inventory.ReturnFlag();
         }
     }
+
+    // -------------------------------------------------------
+    // Флудфилл для нулевых ячеек
+    // -------------------------------------------------------
 
     void FloodReveal(MineCell startCell)
     {
@@ -148,6 +181,9 @@ public class Minefield : MonoBehaviour
             }
         }
     }
-    //дебаг
+
+    // -------------------------------------------------------
+    // Публичный доступ к ячейкам (для отладки)
+    // -------------------------------------------------------
     public List<MineCell> GetAllCells() => cells;
 }
