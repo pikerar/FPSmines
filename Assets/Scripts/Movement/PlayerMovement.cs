@@ -9,10 +9,13 @@ public class PlayerMovement : MonoBehaviour
     private const float moveSpeed = 5f;
     private const float groundDrag = 8f;
 
-    private const float jumpForce = 7.0f;
+    private const float jumpForce = 9.0f;
     private float jumpCooldown = 0.9f;
-    private const float airMultiplier = 0.5f;
+    private const float airMultiplier = 1.3f;
     bool readyToJump;
+
+    private const float fallMultiplier = 3f;      // множитель гравитации при падении
+    private const float lowJumpMultiplier = 2f;   // если отпустил прыжок раньше
 
     public float walkSpeed;
     public float sprintSpeed;
@@ -62,10 +65,24 @@ public class PlayerMovement : MonoBehaviour
         else
             rb.linearDamping = 0;
     }
+    void ApplyGravity()
+    {
+        if (rb.linearVelocity.y < 0)
+        {
+            // ѕадение Ч увеличиваем гравитацию
+            rb.AddForce(Physics.gravity * (fallMultiplier - 1) * rb.mass, ForceMode.Force);
+        }
+        else if (rb.linearVelocity.y > 0 && !Input.GetKey(jumpKey))
+        {
+            // ќтпустил кнопку прыжка в воздухе Ч тоже т€нем вниз сильнее
+            rb.AddForce(Physics.gravity * (lowJumpMultiplier - 1) * rb.mass, ForceMode.Force);
+        }
+    }
 
     private void FixedUpdate()
     {
         MovePlayer();
+        ApplyGravity();
     }
 
     private void MyInput()
