@@ -1,18 +1,17 @@
 using UnityEngine;
 
-/// <summary>
-/// Обрабатывает ЛКМ/ПКМ по минам и наведение на объекты.
-/// </summary>
 public class PlayerInteraction : MonoBehaviour
 {
-    [Header("Дистанция луча")]
-    public float rayDistance = 10f;
+    [Header("Дистанция луча (максимум видимости)")]
+    [SerializeField] private float rayDistance = 10f;
+
+    [Header("Дистанция взаимодействия (подсказка + клики)")]
+    [SerializeField] private float interactDistance = 3f;
 
     [Header("Камера (если не назначена — ищет Camera.main)")]
-    public Camera playerCamera;
+    [SerializeField] private Camera playerCamera;
 
     private Minefield minefield;
-
     private MineCell hoveredMine;
     private FlagBox hoveredBox;
 
@@ -38,34 +37,28 @@ public class PlayerInteraction : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, rayDistance))
         {
-            newMine = hit.collider.GetComponentInParent<MineCell>();
-            if (newMine == null) newBox = hit.collider.GetComponentInParent<FlagBox>();
+            if (hit.distance <= interactDistance)
+            {
+                newMine = hit.collider.GetComponentInParent<MineCell>();
+                if (newMine == null) newBox = hit.collider.GetComponentInParent<FlagBox>();
+            }
         }
 
-        if (newMine != hoveredMine)
-        {
-            hoveredMine = newMine;
-        }
-        if (newBox != hoveredBox)
-        {
-            hoveredBox = newBox;
-        }
+        hoveredMine = newMine;
+        hoveredBox = newBox;
 
         MinefieldHUD.Instance?.UpdateHoverHint(hoveredMine, hoveredBox);
     }
 
     void HandleInput()
     {
-        if (hoveredMine != null)
-        {
-            if (Input.GetMouseButtonDown(0)) // ЛКМ
-            {
-                minefield?.OnLeftClick(hoveredMine);
-            }
-            else if (Input.GetMouseButtonDown(1)) // ПКМ
-            {
-                minefield?.OnRightClick(hoveredMine);
-            }
-        }
+        if (hoveredMine == null) return;
+        var input = InputHandler.Instance;
+        if (input == null) return;
+
+        if (input.LeftClickDown)
+            minefield?.OnLeftClick(hoveredMine);
+        else if (input.RightClickDown)
+            minefield?.OnRightClick(hoveredMine);
     }
 }

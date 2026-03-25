@@ -6,8 +6,6 @@ public class FlagBox : MonoBehaviour
     [SerializeField] private int flagsInBox = 5;
     [SerializeField] private float interactDistance = 3f;
 
-    // Дочерние объекты-префабы флагов внутри ящика
-    // Заполни в Inspector перетащив объекты флагов из Hierarchy
     [SerializeField] private GameObject[] flagObjects;
 
     public bool IsPlayerNearby { get; private set; } = false;
@@ -39,7 +37,7 @@ public class FlagBox : MonoBehaviour
         float dist = Vector3.Distance(transform.position, playerTransform.position);
         IsPlayerNearby = dist <= interactDistance;
 
-        if (IsPlayerNearby && Input.GetKeyDown(KeyCode.E))
+        if (IsPlayerNearby && InputHandler.Instance != null && InputHandler.Instance.InteractPressed)
             Refill();
     }
 
@@ -55,6 +53,7 @@ public class FlagBox : MonoBehaviour
         Debug.Log($"[FlagBox] Отдано флагов: {added}, осталось в ящике: {flagsRemaining}");
     }
 
+    //удаление объектов флагов пропорционально остатку
     void UpdateFlagVisuals()
     {
         if (flagObjects == null || flagObjects.Length == 0) return;

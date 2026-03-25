@@ -1,9 +1,6 @@
 using UnityEngine;
 using TMPro;
 
-/// <summary>
-/// Как я горд тем, что я додумался до этого))))0
-/// </summary>
 public class MineCell : MonoBehaviour
 {
     [Header("Значение ячейки (0-8 = число, 9 = мина)")]

@@ -30,16 +30,12 @@ public class Minefield : MonoBehaviour
         CountDangerousMines();
     }
 
-    // -------------------------------------------------------
-    // Инициализация
-    // -------------------------------------------------------
-
     void CollectCells()
     {
         cells.Clear();
         MineCell[] found = GetComponentsInChildren<MineCell>();
         cells.AddRange(found);
-        Debug.Log($"[Minefield] Найдено ячеек: {cells.Count}");
+        Debug.Log($"[Minefield] найдено ячеек: {cells.Count}");
     }
 
     void PlaceRandomMines()
@@ -53,7 +49,7 @@ public class Minefield : MonoBehaviour
             int idx = Random.Range(0, cells.Count);
             if (cells[idx].value != 9) { cells[idx].SetValue(9); placed++; }
         }
-        Debug.Log($"[Minefield] Расставлено мин: {placed}");
+        Debug.Log($"[Minefield] расставлено мин: {placed}");
     }
 
     void CalculateValues()
@@ -86,10 +82,6 @@ public class Minefield : MonoBehaviour
         }
         return result;
     }
-
-    // -------------------------------------------------------
-    // Взаимодействие
-    // -------------------------------------------------------
 
     public void OnLeftClick(MineCell cell)
     {
