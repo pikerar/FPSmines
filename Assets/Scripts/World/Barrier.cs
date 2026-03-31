@@ -8,7 +8,7 @@ public class Barrier : MonoBehaviour
     [SerializeField] private float openAngle = 80f;
 
     [Header("Ось вращения")]
-    [SerializeField] private Vector3 rotationAxis = Vector3.forward;
+    [SerializeField] private Vector3 rotationAxis = Vector3.up;
 
     [Header("Анимация")]
     [SerializeField] private float duration = 0.8f;
