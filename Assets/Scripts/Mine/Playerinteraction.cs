@@ -14,6 +14,7 @@ public class PlayerInteraction : MonoBehaviour
     private Minefield minefield;
     private MineCell hoveredMine;
     private FlagBox hoveredBox;
+    private BarrierButton hoveredButton;
 
     void Start()
     {
@@ -34,6 +35,7 @@ public class PlayerInteraction : MonoBehaviour
 
         MineCell newMine = null;
         FlagBox newBox = null;
+        BarrierButton newButton = null;
 
         if (Physics.Raycast(ray, out hit, rayDistance))
         {
@@ -41,24 +43,26 @@ public class PlayerInteraction : MonoBehaviour
             {
                 newMine = hit.collider.GetComponentInParent<MineCell>();
                 if (newMine == null) newBox = hit.collider.GetComponentInParent<FlagBox>();
+                if (newMine == null && newBox == null) newButton = hit.collider.GetComponentInParent<BarrierButton>();
             }
         }
 
         hoveredMine = newMine;
         hoveredBox = newBox;
+        hoveredButton = newButton;
 
-        MinefieldHUD.Instance?.UpdateHoverHint(hoveredMine, hoveredBox);
+        MinefieldHUD.Instance?.UpdateHoverHint(hoveredMine, hoveredBox, hoveredButton);
     }
 
     void HandleInput()
     {
-        if (hoveredMine == null) return;
         var input = InputHandler.Instance;
         if (input == null) return;
 
-        if (input.LeftClickDown)
-            minefield?.OnLeftClick(hoveredMine);
-        else if (input.RightClickDown)
-            minefield?.OnRightClick(hoveredMine);
+        if (hoveredMine != null)
+        {
+            if (input.LeftClickDown) minefield?.OnLeftClick(hoveredMine);
+            else if (input.RightClickDown) minefield?.OnRightClick(hoveredMine);
+        }
     }
 }

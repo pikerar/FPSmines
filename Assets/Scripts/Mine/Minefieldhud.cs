@@ -24,6 +24,8 @@ public class MinefieldHUD : MonoBehaviour
     [SerializeField] private string mineNoFlagsHint = "ЛКМ — детонация  /  Флагов нет";
     [SerializeField] private string boxHint = "E — забрать флаги";
     [SerializeField] private string boxEmptyHint = "Флагов нет";
+    [SerializeField] private string buttonHint = "E — взаимодействие";
+    [SerializeField] private string buttonUsedHint = "";
 
     [Header("Цвета счётчика мин")]
     [SerializeField] private Color colorNormal = Color.white;
@@ -120,7 +122,7 @@ public class MinefieldHUD : MonoBehaviour
     // Подсказки при наведении
     // -------------------------------------------------------
 
-    public void UpdateHoverHint(MineCell mine, FlagBox box)
+    public void UpdateHoverHint(MineCell mine, FlagBox box, BarrierButton button = null)
     {
         if (mine != null && !mine.isRevealed)
         {
@@ -134,6 +136,8 @@ public class MinefieldHUD : MonoBehaviour
         }
         else if (box != null)
             SetHint(box.FlagsRemaining > 0 ? boxHint : boxEmptyHint);
+        else if (button != null)
+            SetHint(button.IsActivated ? buttonUsedHint : buttonHint);
         else
             SetHint("");
     }
