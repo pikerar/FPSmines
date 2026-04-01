@@ -5,7 +5,7 @@ public class FlagBox : MonoBehaviour
     [Header("Флаги внутри ящика")]
     [SerializeField] private int flagsInBox = 5;
     [SerializeField] private float interactDistance = 3f;
-
+    [SerializeField] private bool destroyWhenEmpty = false;
     [SerializeField] private GameObject[] flagObjects;
 
     public bool IsPlayerNearby { get; private set; } = false;
@@ -51,13 +51,18 @@ public class FlagBox : MonoBehaviour
 
         UpdateFlagVisuals();
         Debug.Log($"[FlagBox] Отдано флагов: {added}, осталось в ящике: {flagsRemaining}");
+
+        if (destroyWhenEmpty && flagsRemaining <= 0)
+            Destroy(gameObject);
     }
 
-    //удаление объектов флагов пропорционально остатку
+    // Удаляем объекты флагов пропорционально остатку
     void UpdateFlagVisuals()
     {
         if (flagObjects == null || flagObjects.Length == 0) return;
 
+        // Сколько объектов должно остаться видимым
+        // Пропорционально: если было 5 флагов и осталось 3 — показываем 3 из 5 объектов
         int totalObjects = flagObjects.Length;
         int shouldBeVisible = flagsInBox > 0
             ? Mathf.RoundToInt((float)flagsRemaining / flagsInBox * totalObjects)
@@ -70,7 +75,7 @@ public class FlagBox : MonoBehaviour
             if (i < shouldBeVisible)
                 flagObjects[i].SetActive(true);
             else
-                Destroy(flagObjects[i]);
+                Destroy(flagObjects[i]); // удаляем со сцены
         }
     }
 }
