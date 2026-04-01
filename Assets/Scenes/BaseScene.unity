@@ -739,6 +739,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flagsInBox: 1
   interactDistance: 3
+  destroyWhenEmpty: 1
   flagObjects:
   - {fileID: 1594535549}
 --- !u!4 &152523711 stripped
@@ -1649,6 +1650,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flagsInBox: 1
   interactDistance: 3
+  destroyWhenEmpty: 1
   flagObjects:
   - {fileID: 2025331866}
 --- !u!1 &298439876 stripped
@@ -6494,6 +6496,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flagsInBox: 5
   interactDistance: 3
+  destroyWhenEmpty: 0
   flagObjects:
   - {fileID: 1975797002}
   - {fileID: 569247432}
@@ -7861,6 +7864,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flagsInBox: 1
   interactDistance: 3
+  destroyWhenEmpty: 1
   flagObjects:
   - {fileID: 957285091}
 --- !u!4 &1357267956 stripped
