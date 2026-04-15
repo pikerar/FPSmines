@@ -16,6 +16,8 @@ public class PlayerInteraction : MonoBehaviour
     private FlagBox hoveredBox;
     private BarrierButton hoveredButton;
 
+    private Collider OldCollider = null;
+
     void Start()
     {
         if (playerCamera == null) playerCamera = Camera.main;
@@ -39,12 +41,18 @@ public class PlayerInteraction : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, rayDistance))
         {
+            if (hit.collider == OldCollider)
+            {
+                return;
+            }
+            OldCollider = hit.collider;
             if (hit.distance <= interactDistance)
             {
                 newMine = hit.collider.GetComponentInParent<MineCell>();
                 if (newMine == null) newBox = hit.collider.GetComponentInParent<FlagBox>();
                 if (newMine == null && newBox == null) newButton = hit.collider.GetComponentInParent<BarrierButton>();
             }
+                        
         }
 
         hoveredMine = newMine;
