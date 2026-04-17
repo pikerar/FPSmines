@@ -29760,7 +29760,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91585eb25e7846045b7a4d55c925371b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rayDistance: 2
+  rayDistance: 3
   interactDistance: 3
   playerCamera: {fileID: 1650656976}
 --- !u!4 &1668025543 stripped
