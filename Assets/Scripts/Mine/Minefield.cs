@@ -30,12 +30,21 @@ public class Minefield : MonoBehaviour
         CountDangerousMines();
     }
 
+    // -------------------------------------------------------
+    // Инициализация
+    // -------------------------------------------------------
+
     void CollectCells()
     {
         cells.Clear();
         MineCell[] found = GetComponentsInChildren<MineCell>();
         cells.AddRange(found);
-        Debug.Log($"[Minefield] найдено ячеек: {cells.Count}");
+
+        // Каждая ячейка знает своё поле
+        foreach (var cell in cells)
+            cell.ParentField = this;
+
+        Debug.Log($"[Minefield] Найдено ячеек: {cells.Count}");
     }
 
     void PlaceRandomMines()
@@ -49,7 +58,7 @@ public class Minefield : MonoBehaviour
             int idx = Random.Range(0, cells.Count);
             if (cells[idx].value != 9) { cells[idx].SetValue(9); placed++; }
         }
-        Debug.Log($"[Minefield] расставлено мин: {placed}");
+        Debug.Log($"[Minefield] Расставлено мин: {placed}");
     }
 
     void CalculateValues()
@@ -82,6 +91,10 @@ public class Minefield : MonoBehaviour
         }
         return result;
     }
+
+    // -------------------------------------------------------
+    // Взаимодействие
+    // -------------------------------------------------------
 
     public void OnLeftClick(MineCell cell)
     {
@@ -134,17 +147,17 @@ public class Minefield : MonoBehaviour
     {
         if (IsCleared) return;
 
-        FlaggedDangerousMines = 0;  // отмеченные взрывоопасные флаги
-        TotalFlaggedCells = 0; // отмеченные ВСЕ флаги
+        FlaggedDangerousMines = 0;
+        TotalFlaggedCells = 0;
         bool allSafeRevealed = true;
 
         foreach (var cell in cells)
         {
-            if (cell.isFlagged) TotalFlaggedCells++; // считаем ВСЕ флаги для худа
+            if (cell.isFlagged) TotalFlaggedCells++; // считаем ВСЕ флаги для HUD
 
             if (cell.value == 9)
             {
-                if (cell.isFlagged) FlaggedDangerousMines++; // считаем взрывоопасные
+                if (cell.isFlagged) FlaggedDangerousMines++; // правильно отмеченные
                 else allSafeRevealed = false;
             }
             else
@@ -155,11 +168,12 @@ public class Minefield : MonoBehaviour
 
         MinefieldHUD.Instance?.UpdateMineCounter(this);
 
+        // Победа только если все опасные отмечены правильно И все безопасные открыты
         if (allSafeRevealed && FlaggedDangerousMines == TotalDangerousMines && TotalFlaggedCells == TotalDangerousMines)
         {
             IsCleared = true;
             Debug.Log($"[Minefield] '{gameObject.name}' очищено!");
-            MinefieldHUD.Instance?.UpdateMineCounter(this);
+            MinefieldHUD.Instance?.UpdateMineCounter(this); // обновляем HUD уже с IsCleared = true
             onFieldCleared.Invoke();
         }
     }

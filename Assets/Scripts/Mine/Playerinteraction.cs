@@ -11,17 +11,13 @@ public class PlayerInteraction : MonoBehaviour
     [Header("Камера (если не назначена — ищет Camera.main)")]
     [SerializeField] private Camera playerCamera;
 
-    private Minefield minefield;
     private MineCell hoveredMine;
     private FlagBox hoveredBox;
     private BarrierButton hoveredButton;
 
-    private Collider OldCollider = null;
-
     void Start()
     {
         if (playerCamera == null) playerCamera = Camera.main;
-        minefield = FindFirstObjectByType<Minefield>();
     }
 
     void Update()
@@ -41,18 +37,12 @@ public class PlayerInteraction : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, rayDistance))
         {
-            if (hit.collider == OldCollider)
-            {
-                return;
-            }
-            OldCollider = hit.collider;
             if (hit.distance <= interactDistance)
             {
                 newMine = hit.collider.GetComponentInParent<MineCell>();
                 if (newMine == null) newBox = hit.collider.GetComponentInParent<FlagBox>();
                 if (newMine == null && newBox == null) newButton = hit.collider.GetComponentInParent<BarrierButton>();
             }
-                        
         }
 
         hoveredMine = newMine;
@@ -69,8 +59,12 @@ public class PlayerInteraction : MonoBehaviour
 
         if (hoveredMine != null)
         {
-            if (input.LeftClickDown) minefield?.OnLeftClick(hoveredMine);
-            else if (input.RightClickDown) minefield?.OnRightClick(hoveredMine);
+            // Берём поле прямо из мины — работает с любым количеством полей на сцене
+            Minefield field = hoveredMine.ParentField;
+            if (field == null) return;
+
+            if (input.LeftClickDown) field.OnLeftClick(hoveredMine);
+            else if (input.RightClickDown) field.OnRightClick(hoveredMine);
         }
     }
 }
