@@ -73,7 +73,6 @@ public class MineCell : MonoBehaviour
             return;
         }
 
-        // Показываем число (0 показываем как пустоту или тоже отображаем)
         string display = value.ToString();
         Color col = value <= 8 ? numberColors[value] : Color.white;
 
@@ -108,7 +107,7 @@ public class MineCell : MonoBehaviour
     private void Explode()
     {
         Debug.Log("ВЗРЫВ! Переход на экран конца игры.");
-        // Небольшая задержка для эффектов если нужно
+        // Небольшая задержка для эффектов
         GameManager.Instance?.TriggerGameOver();
     }
 
