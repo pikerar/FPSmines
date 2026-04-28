@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MoveCamera : MonoBehaviour
@@ -9,5 +7,6 @@ public class MoveCamera : MonoBehaviour
     private void LateUpdate()
     {
         transform.position = cameraPosition.position;
+        transform.rotation = cameraPosition.rotation; // добавь эту строку
     }
 }

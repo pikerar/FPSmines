@@ -1,0 +1,155 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!319 &31900000
+AvatarMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: tabletMask
+  m_Mask: 00000000010000000100000000000000000000000000000001000000000000000100000000000000000000000000000000000000
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: Beanie_02
+    m_Weight: 1
+  - m_Path: Boots_02
+    m_Weight: 1
+  - m_Path: GameRig
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-leg.L
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-leg.L/DEF-shin-L
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-leg.L/DEF-shin-L/DEF-foot.L
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-leg.L/DEF-shin-L/DEF-foot.L/DEF-toes.L
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-leg.R
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-leg.R/DEF-shin-R
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-leg.R/DEF-shin-R/DEF-foot.R
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-leg.R/DEF-shin-R/DEF-foot.R/DEF-toes.R
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-neck
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-neck/DEF-head
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.L
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.L/DEF-arm.L
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.L/DEF-arm.L/DEF-lowerarm.L
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.L/DEF-arm.L/DEF-lowerarm.L/DEF-hand.L
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.L/DEF-arm.L/DEF-lowerarm.L/DEF-hand.L/DEF-finger01.L
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.L/DEF-arm.L/DEF-lowerarm.L/DEF-hand.L/DEF-finger01.L/DEF-finger02.L
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.L/DEF-arm.L/DEF-lowerarm.L/DEF-hand.L/DEF-finger01.L/DEF-finger02.L/DEF-finger03.L
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.L/DEF-arm.L/DEF-lowerarm.L/DEF-hand.L/DEF-finger04.L
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.L/DEF-arm.L/DEF-lowerarm.L/DEF-hand.L/DEF-finger04.L/DEF-finger05.L
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.L/DEF-arm.L/DEF-lowerarm.L/DEF-hand.L/DEF-finger04.L/DEF-finger05.L/DEF-finger06.L
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.L/DEF-arm.L/DEF-lowerarm.L/DEF-hand.L/DEF-finger07.L
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.L/DEF-arm.L/DEF-lowerarm.L/DEF-hand.L/DEF-finger07.L/DEF-finger08.L
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.L/DEF-arm.L/DEF-lowerarm.L/DEF-hand.L/DEF-finger07.L/DEF-finger08.L/DEF-finger09.L
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.L/DEF-arm.L/DEF-lowerarm.L/DEF-hand.L/DEF-finger010.L
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.L/DEF-arm.L/DEF-lowerarm.L/DEF-hand.L/DEF-finger010.L/DEF-finger011.L
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.L/DEF-arm.L/DEF-lowerarm.L/DEF-hand.L/DEF-finger010.L/DEF-finger011.L/DEF-finger012.L
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.L/DEF-arm.L/DEF-lowerarm.L/DEF-hand.L/DEF-finger013.L
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.L/DEF-arm.L/DEF-lowerarm.L/DEF-hand.L/DEF-finger013.L/DEF-finger014.L
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.L/DEF-arm.L/DEF-lowerarm.L/DEF-hand.L/DEF-finger013.L/DEF-finger014.L/DEF-finger015.L
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.R
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.R/DEF-arm.R
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.R/DEF-arm.R/DEF-lowerarm.R
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.R/DEF-arm.R/DEF-lowerarm.R/DEF-hand.R
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.R/DEF-arm.R/DEF-lowerarm.R/DEF-hand.R/DEF-finger01.R
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.R/DEF-arm.R/DEF-lowerarm.R/DEF-hand.R/DEF-finger01.R/DEF-finger02.R
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.R/DEF-arm.R/DEF-lowerarm.R/DEF-hand.R/DEF-finger01.R/DEF-finger02.R/DEF-finger03.R
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.R/DEF-arm.R/DEF-lowerarm.R/DEF-hand.R/DEF-finger04.R
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.R/DEF-arm.R/DEF-lowerarm.R/DEF-hand.R/DEF-finger04.R/DEF-finger05.R
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.R/DEF-arm.R/DEF-lowerarm.R/DEF-hand.R/DEF-finger04.R/DEF-finger05.R/DEF-finger06.R
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.R/DEF-arm.R/DEF-lowerarm.R/DEF-hand.R/DEF-finger07.R
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.R/DEF-arm.R/DEF-lowerarm.R/DEF-hand.R/DEF-finger07.R/DEF-finger08.R
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.R/DEF-arm.R/DEF-lowerarm.R/DEF-hand.R/DEF-finger07.R/DEF-finger08.R/DEF-finger09.R
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.R/DEF-arm.R/DEF-lowerarm.R/DEF-hand.R/DEF-finger010.R
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.R/DEF-arm.R/DEF-lowerarm.R/DEF-hand.R/DEF-finger010.R/DEF-finger011.R
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.R/DEF-arm.R/DEF-lowerarm.R/DEF-hand.R/DEF-finger010.R/DEF-finger011.R/DEF-finger012.R
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.R/DEF-arm.R/DEF-lowerarm.R/DEF-hand.R/DEF-finger013.R
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.R/DEF-arm.R/DEF-lowerarm.R/DEF-hand.R/DEF-finger013.R/DEF-finger014.R
+    m_Weight: 1
+  - m_Path: GameRig/DEF-pelvis/DEF-spine/DEF-Chest/DEF-shoulder.R/DEF-arm.R/DEF-lowerarm.R/DEF-hand.R/DEF-finger013.R/DEF-finger014.R/DEF-finger015.R
+    m_Weight: 1
+  - m_Path: GameRig/mch-Barret-lock
+    m_Weight: 1
+  - m_Path: GameRig/mch-Barret-lock/Barret-handle
+    m_Weight: 1
+  - m_Path: GameRig/mch-Barret-lock/Barret-handle/barett-handle02
+    m_Weight: 1
+  - m_Path: GameRig/mch-Barret-lock/Barret-handle/mag-barett
+    m_Weight: 1
+  - m_Path: GameRig/mch-Barret-lock/Barret-handle/mag-release
+    m_Weight: 1
+  - m_Path: GameRig/mch-Barret-lock/Barret-handle/pull-barett
+    m_Weight: 1
+  - m_Path: GameRig/mch-Barret-lock/Barret-handle/trigger-barett
+    m_Weight: 1
+  - m_Path: GameRig/mch-scar-lock
+    m_Weight: 1
+  - m_Path: GameRig/mch-scar-lock/scar-handle
+    m_Weight: 1
+  - m_Path: GameRig/mch-scar-lock/scar-handle/scar-handle02
+    m_Weight: 1
+  - m_Path: GameRig/mch-scar-lock/scar-handle/scar-mag
+    m_Weight: 1
+  - m_Path: GameRig/mch-scar-lock/scar-handle/scar-pull
+    m_Weight: 1
+  - m_Path: GameRig/mch-scar-lock/scar-handle/scar-trigger
+    m_Weight: 1
+  - m_Path: Hands_02
+    m_Weight: 1
+  - m_Path: Head_02
+    m_Weight: 1
+  - m_Path: Legs_02
+    m_Weight: 1
+  - m_Path: Torso_02
+    m_Weight: 1

@@ -18,6 +18,7 @@ public class PlayerInteraction : MonoBehaviour
     void Start()
     {
         if (playerCamera == null) playerCamera = Camera.main;
+        Debug.Log($"[Interaction] камера: {playerCamera?.gameObject.name}");
     }
 
     void Update()
@@ -28,7 +29,9 @@ public class PlayerInteraction : MonoBehaviour
 
     void HandleRaycast()
     {
-        Ray ray = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f, 0));
+        Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+        Debug.DrawRay(ray.origin, ray.direction * rayDistance, Color.red, 0.1f);
+
         RaycastHit hit;
 
         MineCell newMine = null;
@@ -37,9 +40,11 @@ public class PlayerInteraction : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, rayDistance))
         {
+
             if (hit.distance <= interactDistance)
             {
                 newMine = hit.collider.GetComponentInParent<MineCell>();
+                Debug.Log($"[Raycast] MineCell найден: {newMine != null}");
                 if (newMine == null) newBox = hit.collider.GetComponentInParent<FlagBox>();
                 if (newMine == null && newBox == null) newButton = hit.collider.GetComponentInParent<BarrierButton>();
             }
