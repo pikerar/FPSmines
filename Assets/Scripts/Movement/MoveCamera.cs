@@ -7,6 +7,6 @@ public class MoveCamera : MonoBehaviour
     private void LateUpdate()
     {
         transform.position = cameraPosition.position;
-        transform.rotation = cameraPosition.rotation; // добавь эту строку
+        transform.rotation = cameraPosition.rotation;
     }
 }

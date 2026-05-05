@@ -18,11 +18,13 @@ public class NewPlayerMovement: MonoBehaviour
     public GameObject cam;
     public GameObject maincam;
     public GameObject tablet;
-    Vector3 velocity;
+    
+    public Vector3 velocity;
+    public Vector3 move;
+    public bool isGrounded;
 
     private Coroutine hideCoroutine;
     private bool tabletOut = false;
-    bool isGrounded;
     // Start is called before the first frame update
     void Start()
     {
@@ -73,7 +75,7 @@ public class NewPlayerMovement: MonoBehaviour
             velocity.y = Mathf.Sqrt(jumpHeight * gravity);
             anim.SetTrigger("Jump");
         }
-        Vector3 move = transform.right * x + transform.forward * z;
+        move = transform.right * x + transform.forward * z;
         controller.Move(move * speed * Time.deltaTime);
         velocity.y -= gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
