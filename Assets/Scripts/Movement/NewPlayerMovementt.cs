@@ -25,10 +25,14 @@ public class NewPlayerMovement: MonoBehaviour
 
     private Coroutine hideCoroutine;
     private bool tabletOut = false;
+
+    private CameraLook cameraLook;
+    private float defaultMaxY;
     // Start is called before the first frame update
     void Start()
     {
-
+        cameraLook = GetComponent<CameraLook>(); 
+        defaultMaxY = cameraLook.maxY;
     }
 
     // Update is called once per frame
@@ -40,7 +44,9 @@ public class NewPlayerMovement: MonoBehaviour
             anim.SetFloat("Y", Input.GetAxis("Vertical"));
 
         }
+        
         isGrounded = Physics.CheckSphere(GroundCheck.position, groundDistance, groundMask);
+        
         if (isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;
@@ -72,21 +78,31 @@ public class NewPlayerMovement: MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
+            cameraLook.maxY = 40f;
             velocity.y = Mathf.Sqrt(jumpHeight * gravity);
             anim.SetTrigger("Jump");
         }
+
+        if (isGrounded)
+        {
+            cameraLook.maxY = defaultMaxY;
+        }
+
         move = transform.right * x + transform.forward * z;
         controller.Move(move * speed * Time.deltaTime);
         velocity.y -= gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
+        
         if (Input.GetKey("c"))
         {
             controller.height = 1f;
         }
+        
         else
         {
             controller.height = 1.79f;
         }
+        
         if (Input.GetKey("left shift"))
         {
             speed = 10f;
@@ -94,6 +110,7 @@ public class NewPlayerMovement: MonoBehaviour
             cam.SetActive(true);
             maincam.SetActive(false);
         }
+        
         else
         {
             speed = 5f;

@@ -7,8 +7,8 @@ public class CameraLook : MonoBehaviour
     public float sensitivityY = 2f;
 
     [Header("Clamp")]
-    public float minY = -60f;
-    public float maxY = 85f;
+    public float minY = -85f;
+    public float maxY = 60f;
 
     [Header("References")]
     public Transform camHolder;   // перетащи cam holder
