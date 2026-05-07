@@ -23600,6 +23600,7 @@ GameObject:
   m_Component:
   - component: {fileID: 980983201}
   - component: {fileID: 980983200}
+  - component: {fileID: 980983202}
   m_Layer: 6
   m_Name: '[WORLD] Ground'
   m_TagString: Untagged
@@ -23636,6 +23637,19 @@ Transform:
   - {fileID: 754070425}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &980983202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 980983199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 246f54862cd89c74e82c22504bdc1a2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  surfaceType: 0
 --- !u!1001 &983845958
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -42520,10 +42534,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 1543201877}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65e644bba52096746bc647b8310950df, type: 3}
+  m_Script: {fileID: 11500000, guid: e6d67e1e8831a6f439ba3afdc514fc64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FootStepSFX: {fileID: 8300000, guid: 0bc66974c41ff8c4fa15f46d21ad3548, type: 3}
+  leftFootBone: {fileID: 5414404272228738488}
+  rightFootBone: {fileID: 4192149371921939791}
+  rayLength: 1.4
+  groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  stepThreshold: 0.319
+  resetHysteresis: 0.06
+  audioSource: {fileID: 0}
+  volume: 0.8
+  pitchRange: {x: 0.9, y: 1.1}
+  stoneSounds:
+  - {fileID: 8300000, guid: 1f0199a4c6005ec4abbb302f71bc036d, type: 3}
+  - {fileID: 8300000, guid: 53e2adf2ac488ef46bb2b4074de9e363, type: 3}
+  - {fileID: 8300000, guid: a03a96c5d1e99b4409ddd79098abd9ab, type: 3}
+  - {fileID: 8300000, guid: 7187dc81f98b8be4eb97bfc4dd9a5abf, type: 3}
+  - {fileID: 8300000, guid: e3cfcb32689b274419ac73380ea96888, type: 3}
+  dirtSounds: []
+  grassSounds: []
+  woodSounds: []
+  metalSounds:
+  - {fileID: 8300000, guid: 149e8ca9df68d744e9722158daa78ab1, type: 3}
+  - {fileID: 8300000, guid: d25a8335420d09f43bedf446e2deffa0, type: 3}
+  - {fileID: 8300000, guid: e80de9a8752d20e4d97ab928d318adb3, type: 3}
+  fallbackSounds: []
+  drawDebugRays: 1
 --- !u!4 &1546015514 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 973948015385892044, guid: 48c40a8fade597948b70d5345c29e6bc, type: 3}

@@ -8,7 +8,7 @@ public class NewPlayerMovement: MonoBehaviour
     public CharacterController controller;
     public Transform GroundCheck;
     public LayerMask groundMask;
-    public float speed = 5f;
+    public float speed = 3f;
     public float gravity = 9.8f;
     public float tabletHideDelay = 0.5f;
 
@@ -105,7 +105,7 @@ public class NewPlayerMovement: MonoBehaviour
         
         if (Input.GetKey("left shift"))
         {
-            speed = 10f;
+            speed = 7f;
             anim.SetFloat("Y", 2);
             cam.SetActive(true);
             maincam.SetActive(false);
@@ -113,7 +113,7 @@ public class NewPlayerMovement: MonoBehaviour
         
         else
         {
-            speed = 5f;
+            speed = 3f;
             cam.SetActive(false);
             maincam.SetActive(true);
         }
