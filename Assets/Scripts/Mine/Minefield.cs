@@ -20,6 +20,9 @@ public class Minefield : MonoBehaviour
     public int TotalFlaggedCells { get; private set; }     // все флаги на поле (для счётчика HUD)
     public bool IsCleared { get; private set; } = false;
 
+    public event System.Action OnFlagPlaced;
+    public event System.Action OnFlagRemoved;
+
     private List<MineCell> cells = new List<MineCell>();
 
     void Awake()
@@ -125,8 +128,11 @@ public class Minefield : MonoBehaviour
 
         if (!cell.isFlagged)
         {
-            if (inventory.UseFlag())
+            if (inventory.UseFlag()) 
+            {
                 cell.ToggleFlag();
+                OnFlagPlaced?.Invoke();
+            }
             else
                 Debug.Log("[Minefield] Флагов нет!");
         }
@@ -134,6 +140,7 @@ public class Minefield : MonoBehaviour
         {
             cell.ToggleFlag();
             inventory.ReturnFlag();
+            OnFlagRemoved?.Invoke();
         }
 
         CheckProgress();

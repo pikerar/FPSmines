@@ -10,6 +10,8 @@ public class FlagBox : MonoBehaviour
 
     public bool IsPlayerNearby { get; private set; } = false;
     public int FlagsRemaining => flagsRemaining;
+    public event System.Action OnRefilled;
+
 
     private Transform playerTransform;
     private int flagsRemaining;
@@ -50,6 +52,7 @@ public class FlagBox : MonoBehaviour
         flagsRemaining -= added;
 
         UpdateFlagVisuals();
+        OnRefilled?.Invoke();
         Debug.Log($"[FlagBox] Отдано флагов: {added}, осталось в ящике: {flagsRemaining}");
 
         if (destroyWhenEmpty && flagsRemaining <= 0)

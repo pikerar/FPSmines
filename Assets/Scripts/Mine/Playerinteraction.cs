@@ -3,21 +3,25 @@ using UnityEngine;
 public class PlayerInteraction : MonoBehaviour
 {
     [Header("Дистанция луча (максимум видимости)")]
-    [SerializeField] private float rayDistance = 10f;
+    [SerializeField] private float rayDistance;
 
     [Header("Дистанция взаимодействия (подсказка + клики)")]
-    [SerializeField] private float interactDistance = 3f;
+    [SerializeField] private float interactDistance;
 
     [Header("Камера (если не назначена — ищет Camera.main)")]
     [SerializeField] private Camera playerCamera;
 
+    private InteractionSoundPlayer soundPlayer;
     private MineCell hoveredMine;
     private FlagBox hoveredBox;
     private BarrierButton hoveredButton;
+    private Minefield subscribedField;
+    private BarrierButton subscribedButton;
 
     void Start()
     {
         if (playerCamera == null) playerCamera = Camera.main;
+        soundPlayer = Object.FindFirstObjectByType<InteractionSoundPlayer>();
         Debug.Log($"[Interaction] камера: {playerCamera?.gameObject.name}");
     }
 
@@ -50,6 +54,37 @@ public class PlayerInteraction : MonoBehaviour
             }
         }
 
+        if (hoveredBox != newBox)
+        {
+            if (hoveredBox != null) hoveredBox.OnRefilled -= OnBoxRefilled;
+            if (newBox != null) newBox.OnRefilled += OnBoxRefilled;
+        }
+
+        Minefield newField = newMine?.ParentField;
+        if (subscribedField != newField)
+        {
+            if (subscribedField != null)
+            {
+                subscribedField.OnFlagPlaced -= OnFlagPlaced;
+                subscribedField.OnFlagRemoved -= OnFlagRemoved;
+            }
+            if (newField != null)
+            {
+                newField.OnFlagPlaced += OnFlagPlaced;
+                newField.OnFlagRemoved += OnFlagRemoved;
+            }
+            subscribedField = newField;
+        }
+
+        if (subscribedButton != newButton)
+        {
+            if (subscribedButton != null)
+                subscribedButton.OnActivated -= OnButtonActivated;
+            if (newButton != null)
+                newButton.OnActivated += OnButtonActivated;
+            subscribedButton = newButton;
+        }
+
         hoveredMine = newMine;
         hoveredBox = newBox;
         hoveredButton = newButton;
@@ -64,12 +99,25 @@ public class PlayerInteraction : MonoBehaviour
 
         if (hoveredMine != null)
         {
-            // Берём поле прямо из мины — работает с любым количеством полей на сцене
             Minefield field = hoveredMine.ParentField;
             if (field == null) return;
 
-            if (input.LeftClickDown) field.OnLeftClick(hoveredMine);
-            else if (input.RightClickDown) field.OnRightClick(hoveredMine);
+            if (input.LeftClickDown)
+            {
+                field.OnLeftClick(hoveredMine);
+                soundPlayer?.Play("mine_left_click"); // <-- добавлено
+            }
+            else if (input.RightClickDown)
+            { 
+                field.OnRightClick(hoveredMine);
+                soundPlayer?.Play("mine_right_click"); // <-- добавлено
+            }
         }
     }
+
+
+    void OnBoxRefilled() => soundPlayer?.Play("box_interact");
+    void OnFlagPlaced() => soundPlayer?.Play("flag_place");
+    void OnFlagRemoved() => soundPlayer?.Play("flag_remove");
+    void OnButtonActivated() => soundPlayer?.Play("button_press");
 }

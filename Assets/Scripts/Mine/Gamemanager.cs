@@ -1,10 +1,8 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
-/// <summary>
-/// Глобальный менеджер игры
-/// Накинуть на геймменеджер и усё
-/// </summary>
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
@@ -15,40 +13,81 @@ public class GameManager : MonoBehaviour
     [Header("Задержка перед переходом на EndGame (сек)")]
     public float gameOverDelay = 1.5f;
 
+    [Header("Звук взрыва")]
+    [SerializeField] private AudioClip explosionClip;
+    [SerializeField] private AudioSource explosionSource;
+    [Range(0f, 1f)]
+    [SerializeField] private float explosionVolume = 1f;
+
+    [Header("Флеш взрыва")]
+    [SerializeField] private Image explosionFlash;
+    [SerializeField] private float flashDuration = 0.3f;
+
     private bool gameEnded = false;
 
     void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
+
+        if (explosionSource == null)
+        {
+            explosionSource = gameObject.AddComponent<AudioSource>();
+            explosionSource.spatialBlend = 0f;
+            explosionSource.playOnAwake = false;
+        }
+
+        if (explosionFlash != null)
+        {
+            var c = explosionFlash.color;
+            c.a = 0f;
+            explosionFlash.color = c;
+        }
     }
 
-    /// <summary>
-    /// Вызывается MineCell при взрыве
-    /// </summary>
     public void TriggerGameOver()
     {
         if (gameEnded) return;
         gameEnded = true;
-
-        Invoke(nameof(LoadGameOverScene), gameOverDelay);
+        StartCoroutine(GameOverSequence());
     }
 
-    //void RevealAllMines()
-    //{
-    //    MineCell[] allCells = FindObjectsOfType<MineCell>();
-    //    foreach (var cell in allCells)
-    //    {
-    //        if (cell.value == 9 && !cell.isRevealed)
-    //        {
-    //            cell.RevealSilent();
-    //        }
-    //    }
-    //}
+    IEnumerator GameOverSequence()
+    {
+        if (explosionClip != null)
+            explosionSource.PlayOneShot(explosionClip, explosionVolume);
 
-    /// <summary>
-    /// Переход на экран эндгейма при проигрыше
-    /// </summary>
+        if (explosionFlash != null)
+            StartCoroutine(FlashRoutine());
+
+        yield return new WaitForSeconds(gameOverDelay);
+
+        LoadGameOverScene();
+    }
+
+    IEnumerator FlashRoutine()
+    {
+        SetFlashAlpha(1f);
+
+        float t = 0f;
+        while (t < flashDuration)
+        {
+            t += Time.deltaTime;
+            SetFlashAlpha(Mathf.Lerp(1f, 0f, t / flashDuration));
+            yield return null;
+        }
+
+        SetFlashAlpha(0f);
+    }
+
+    void SetFlashAlpha(float alpha)
+    {
+        if (explosionFlash == null) return;
+        var c = explosionFlash.color;
+        c.a = alpha;
+        explosionFlash.color = c;
+    }
+
     void LoadGameOverScene()
     {
         Cursor.lockState = CursorLockMode.None;
@@ -56,9 +95,6 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(gameOverSceneName);
     }
 
-    /// <summary>
-    /// Перезапуск уровня
-    /// </summary>
     public void RestartGame()
     {
         gameEnded = false;

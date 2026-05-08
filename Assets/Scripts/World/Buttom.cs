@@ -12,7 +12,14 @@ public class BarrierButton : MonoBehaviour
     [Header("Дистанция взаимодействия")]
     [SerializeField] private float interactDistance = 2f;
 
+    [Header("Реплика перед открытием")]
+    [SerializeField] private AudioClip voiceLine;
+    [SerializeField] private AudioSource voiceSource; 
+    [Range(0f, 1f)]
+    [SerializeField] private float voiceVolume = 1f;
+
     public bool IsActivated { get; private set; } = false;
+    public event System.Action OnActivated; 
 
     private Transform playerTransform;
 
@@ -20,6 +27,16 @@ public class BarrierButton : MonoBehaviour
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null) playerTransform = player.transform;
+
+        if (voiceSource == null)
+        {
+            voiceSource = gameObject.AddComponent<AudioSource>();
+            voiceSource.spatialBlend = 1f;      
+            voiceSource.rolloffMode = AudioRolloffMode.Linear;
+            voiceSource.minDistance = 1f;
+            voiceSource.maxDistance = 15f;
+            voiceSource.playOnAwake = false;
+        }
     }
 
     void Update()
@@ -37,14 +54,21 @@ public class BarrierButton : MonoBehaviour
     void Activate()
     {
         IsActivated = true;
+        OnActivated?.Invoke();
         StartCoroutine(OpenSequence());
     }
 
     IEnumerator OpenSequence()
     {
-        // тут будет бубнеж
-
-        yield return new WaitForSeconds(delayBeforeOpen);
+        if (voiceLine != null && voiceSource != null)
+        {
+            voiceSource.PlayOneShot(voiceLine, voiceVolume);
+            yield return new WaitForSeconds(Mathf.Max(voiceLine.length, delayBeforeOpen));
+        }
+        else
+        {
+            yield return new WaitForSeconds(delayBeforeOpen);
+        }
 
         barrier?.Open();
     }
