@@ -23,6 +23,8 @@ public class NewPlayerMovement: MonoBehaviour
     public Vector3 move;
     public bool isGrounded;
 
+    public bool InputLocked { get; set; }
+
     private Coroutine hideCoroutine;
     private bool tabletOut = false;
 
@@ -38,6 +40,13 @@ public class NewPlayerMovement: MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (InputLocked)
+        {
+            anim.SetFloat("X", 0f);
+            anim.SetFloat("Y", 0f);
+            return;
+        }
+
         if (controller.isGrounded)
         {
             anim.SetFloat("X", Input.GetAxis("Horizontal"));

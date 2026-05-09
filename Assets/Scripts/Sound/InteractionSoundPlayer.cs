@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// Звуки взаимодействия персонажа с объектами (кнопки, двери, предметы и т.д.)
+/// Категория: Environment — проходит через AudioMixer группу Environment.
+/// </summary>
 public class InteractionSoundPlayer : MonoBehaviour
 {
     [System.Serializable]
@@ -11,33 +15,41 @@ public class InteractionSoundPlayer : MonoBehaviour
         [Range(0.5f, 2f)] public float pitch = 1f;
     }
 
-    [Header("Источник звука (если не назначен — создаётся автоматически)")]
-    [SerializeField] private AudioSource audioSource;
-
     [Header("Пул звуков")]
     [SerializeField] private SoundEntry[] sounds;
 
-    void Awake()
-    {
-        if (audioSource == null)
-            audioSource = gameObject.AddComponent<AudioSource>();
-
-        audioSource.spatialBlend = 0f;
-        audioSource.playOnAwake = false;
-    }
-
     public void Play(string key)
     {
-        foreach (var entry in sounds)
+        var entry = FindEntry(key);
+        if (entry == null)
         {
-            if (entry.key == key && entry.clip != null)
-            {
-                audioSource.pitch = entry.pitch;
-                audioSource.PlayOneShot(entry.clip, entry.volume);
-                return;
-            }
+            Debug.LogWarning($"[InteractionSoundPlayer] Звук с ключом '{key}' не найден.");
+            return;
         }
 
-        Debug.LogWarning($"[InteractionSoundPlayer] Звук с ключом '{key}' не найден");
+        SoundPlayer.Instance?.PlayEnvironment(entry.clip, transform.position, entry.volume, entry.pitch);
+    }
+
+
+    public void PlayUI(string key)
+    {
+        var entry = FindEntry(key);
+        if (entry == null)
+        {
+            Debug.LogWarning($"[InteractionSoundPlayer] Звук с ключом '{key}' не найден.");
+            return;
+        }
+
+        SoundPlayer.Instance?.PlayUI(entry.clip, entry.volume, entry.pitch);
+    }
+
+
+    private SoundEntry FindEntry(string key)
+    {
+        if (sounds == null) return null;
+        foreach (var entry in sounds)
+            if (entry.key == key && entry.clip != null)
+                return entry;
+        return null;
     }
 }

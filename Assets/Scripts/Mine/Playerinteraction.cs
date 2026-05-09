@@ -14,9 +14,8 @@ public class PlayerInteraction : MonoBehaviour
     private InteractionSoundPlayer soundPlayer;
     private MineCell hoveredMine;
     private FlagBox hoveredBox;
-    private BarrierButton hoveredButton;
+    private InteractableButton hoveredButton;  
     private Minefield subscribedField;
-    private BarrierButton subscribedButton;
 
     void Start()
     {
@@ -36,21 +35,18 @@ public class PlayerInteraction : MonoBehaviour
         Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
         Debug.DrawRay(ray.origin, ray.direction * rayDistance, Color.red, 0.1f);
 
-        RaycastHit hit;
-
         MineCell newMine = null;
         FlagBox newBox = null;
-        BarrierButton newButton = null;
+        InteractableButton newButton = null;  
 
-        if (Physics.Raycast(ray, out hit, rayDistance))
+        if (Physics.Raycast(ray, out RaycastHit hit, rayDistance))
         {
-
             if (hit.distance <= interactDistance)
             {
                 newMine = hit.collider.GetComponentInParent<MineCell>();
                 Debug.Log($"[Raycast] MineCell найден: {newMine != null}");
                 if (newMine == null) newBox = hit.collider.GetComponentInParent<FlagBox>();
-                if (newMine == null && newBox == null) newButton = hit.collider.GetComponentInParent<BarrierButton>();
+                if (newMine == null && newBox == null) newButton = hit.collider.GetComponentInParent<InteractableButton>();
             }
         }
 
@@ -76,15 +72,6 @@ public class PlayerInteraction : MonoBehaviour
             subscribedField = newField;
         }
 
-        if (subscribedButton != newButton)
-        {
-            if (subscribedButton != null)
-                subscribedButton.OnActivated -= OnButtonActivated;
-            if (newButton != null)
-                newButton.OnActivated += OnButtonActivated;
-            subscribedButton = newButton;
-        }
-
         hoveredMine = newMine;
         hoveredBox = newBox;
         hoveredButton = newButton;
@@ -97,6 +84,13 @@ public class PlayerInteraction : MonoBehaviour
         var input = InputHandler.Instance;
         if (input == null) return;
 
+        if (hoveredButton != null && input.InteractPressed)
+        {
+            hoveredButton.Activate();
+            return;
+        }
+
+        // Взаимодействие с минным полем
         if (hoveredMine != null)
         {
             Minefield field = hoveredMine.ParentField;
@@ -105,19 +99,17 @@ public class PlayerInteraction : MonoBehaviour
             if (input.LeftClickDown)
             {
                 field.OnLeftClick(hoveredMine);
-                soundPlayer?.Play("mine_left_click"); // <-- добавлено
+                soundPlayer?.Play("mine_left_click");
             }
             else if (input.RightClickDown)
-            { 
+            {
                 field.OnRightClick(hoveredMine);
-                soundPlayer?.Play("mine_right_click"); // <-- добавлено
+                soundPlayer?.Play("mine_right_click");
             }
         }
     }
 
-
     void OnBoxRefilled() => soundPlayer?.Play("box_interact");
     void OnFlagPlaced() => soundPlayer?.Play("flag_place");
     void OnFlagRemoved() => soundPlayer?.Play("flag_remove");
-    void OnButtonActivated() => soundPlayer?.Play("button_press");
 }

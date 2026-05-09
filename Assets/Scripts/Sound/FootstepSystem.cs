@@ -1,4 +1,5 @@
 using UnityEngine;
+
 public class FootstepSystem : MonoBehaviour
 {
     // ─────────────────────────────────────────────────────────────
@@ -28,9 +29,6 @@ public class FootstepSystem : MonoBehaviour
     public float resetHysteresis = 0.06f;
 
     [Header("Audio")]
-    [Tooltip("AudioSource used to play footstep sounds")]
-    public AudioSource audioSource;
-
     [Range(0f, 1f)]
     public float volume = 0.8f;
 
@@ -64,27 +62,12 @@ public class FootstepSystem : MonoBehaviour
     //  Private state
     // ─────────────────────────────────────────────────────────────
 
-    // Per-foot state machine
     private bool _leftStepped = false;
     private bool _rightStepped = false;
 
     // ─────────────────────────────────────────────────────────────
     //  Unity lifecycle
     // ─────────────────────────────────────────────────────────────
-
-    private void Awake()
-    {
-        // Auto-find AudioSource if not assigned
-        if (audioSource == null)
-            audioSource = GetComponent<AudioSource>();
-
-        if (audioSource == null)
-        {
-            audioSource = gameObject.AddComponent<AudioSource>();
-            audioSource.spatialBlend = 1f; // 3D sound
-            audioSource.playOnAwake = false;
-        }
-    }
 
     private void Update()
     {
@@ -117,7 +100,7 @@ public class FootstepSystem : MonoBehaviour
             {
                 // ── Foot has just touched / nearly touched the ground ──
                 stepped = true;
-                PlayFootstep(hit);
+                PlayFootstep(hit, foot.position);
             }
             else if (stepped && distance > stepThreshold + resetHysteresis)
             {
@@ -134,21 +117,23 @@ public class FootstepSystem : MonoBehaviour
 
     /// <summary>
     /// Selects the correct sound array based on the FootstepSurface
-    /// component found on the hit object, then plays a random clip.
+    /// component found on the hit object, then plays a random clip via SoundPlayer.
+    /// Позиция — точка касания стопы (hit.point), а не позиция персонажа.
     /// </summary>
-    private void PlayFootstep(RaycastHit hit)
+    private void PlayFootstep(RaycastHit hit, Vector3 footWorldPos)
     {
+        if (SoundPlayer.Instance == null) return;
+
         AudioClip[] clips = GetClipsForSurface(hit.collider);
+        if (clips == null || clips.Length == 0) return;
 
-        if (clips == null || clips.Length == 0)
-            return;
-
-        // Pick a random clip
         AudioClip clip = clips[Random.Range(0, clips.Length)];
         if (clip == null) return;
 
-        audioSource.pitch = Random.Range(pitchRange.x, pitchRange.y);
-        audioSource.PlayOneShot(clip, volume);
+        float pitch = Random.Range(pitchRange.x, pitchRange.y);
+
+        // Звук из точки касания стопы — точнее, чем от центра персонажа
+        SoundPlayer.Instance.PlayEnvironment(clip, hit.point, volume, pitch);
     }
 
     /// <summary>
@@ -157,14 +142,10 @@ public class FootstepSystem : MonoBehaviour
     /// </summary>
     private AudioClip[] GetClipsForSurface(Collider col)
     {
-        // Look for FootstepSurface on the object itself, then walk up the hierarchy
         FootstepSurface surface = col.GetComponentInParent<FootstepSurface>();
 
         if (surface == null)
-        {
-            // No component found — use fallback
             return fallbackSounds;
-        }
 
         switch (surface.surfaceType)
         {
@@ -178,7 +159,7 @@ public class FootstepSystem : MonoBehaviour
     }
 
     // ─────────────────────────────────────────────────────────────
-    //  Public API (call from other scripts if needed)
+    //  Public API
     // ─────────────────────────────────────────────────────────────
 
     /// <summary>
@@ -188,6 +169,6 @@ public class FootstepSystem : MonoBehaviour
     {
         Ray ray = new Ray(worldPosition + Vector3.up * 0.1f, Vector3.down);
         if (Physics.Raycast(ray, out RaycastHit hit, rayLength + 0.1f, groundLayerMask))
-            PlayFootstep(hit);
+            PlayFootstep(hit, worldPosition);
     }
 }

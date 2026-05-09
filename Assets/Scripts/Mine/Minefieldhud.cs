@@ -122,7 +122,7 @@ public class MinefieldHUD : MonoBehaviour
     // Подсказки при наведении
     // -------------------------------------------------------
 
-    public void UpdateHoverHint(MineCell mine, FlagBox box, BarrierButton button = null)
+    public void UpdateHoverHint(MineCell mine, FlagBox box, InteractableButton button = null)  // ← было BarrierButton
     {
         if (mine != null && !mine.isRevealed)
         {
