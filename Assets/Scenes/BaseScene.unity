@@ -15,7 +15,7 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
   m_Fog: 1
-  m_FogColor: {r: 0.25882354, g: 0.37647063, b: 0.5647059, a: 0}
+  m_FogColor: {r: 0.21698111, g: 0.21698111, b: 0.21698111, a: 0}
   m_FogMode: 1
   m_FogDensity: 0.011
   m_LinearFogStart: 276.4
@@ -25,8 +25,8 @@ RenderSettings:
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 0.56
   m_AmbientMode: 0
-  m_SubtractiveShadowColor: {r: 0.3019608, g: 0.45882353, b: 0.59607846, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: b1a2b75a5dcd25149a9bca6c743839b1, type: 2}
+  m_SubtractiveShadowColor: {r: 0.36618903, g: 0.3671146, b: 0.3679245, a: 1}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 7d42abe82073d7d42bf23b70f5973ac0, type: 2}
   m_HaloStrength: 0.254
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -1255,7 +1255,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &53816151
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10341,7 +10341,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 1
-  m_Color: {r: 0.8773585, g: 0.56697226, b: 0.56697226, a: 1}
+  m_Color: {r: 0.3962264, g: 0.27199402, b: 0.1999822, a: 1}
   m_Intensity: 3
   m_Range: 10
   m_SpotAngle: 30
@@ -26224,7 +26224,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -26285,7 +26285,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.01
-  far clip plane: 200
+  far clip plane: 500
   field of view: 75
   orthographic: 0
   orthographic size: 5
