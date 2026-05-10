@@ -3366,8 +3366,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneAmbients:
   - sceneName: MainMenu
-    clip: {fileID: 8300000, guid: 2cb87b48c47d821428a3921f807a9815, type: 3}
-    volume: 1
+    clip: {fileID: 8300000, guid: 2db326b175670334cb5c77fa958bc930, type: 3}
+    volume: 0.9
+  - sceneName: BaseScene
+    clip: {fileID: 8300000, guid: 6d814192965a60b4eba4fbd0c25e96ec, type: 3}
+    volume: 0.4
   fadeDuration: 1.5
 --- !u!114 &1764791907
 MonoBehaviour:
