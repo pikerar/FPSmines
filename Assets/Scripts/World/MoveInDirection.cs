@@ -5,7 +5,7 @@ public class MoveInDirection : MonoBehaviour
     [Header("Movement Settings")]
     public Vector3 direction = Vector3.forward;
     public float speed = 5f;
-    public float distance = 10f; // 0 = бесконечно
+    public float distance = 10f; 
 
     private bool _moving = false;
     private float _traveled = 0f;

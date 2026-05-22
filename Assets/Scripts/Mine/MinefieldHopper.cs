@@ -1,20 +1,12 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-/// <summary>
-/// Модульная воронка (горлышко бутылки) для нескольких майнфилдов
-///
-/// пустой объект со скриптом как воронка,
-/// принимающая несколько майнфилдов с условием and / or
-/// майнфилды в Required Fields
-/// событие - On Condition Met
-/// </summary>
 public class MinefieldTrigger : MonoBehaviour
 {
     public enum ConditionMode
     {
-        AND, // выполнены ВСЕ условия
-        OR   // выполнено ХОТЯ БЫ ОДНО
+        AND,
+        OR   
     }
 
     [Header("Минные поля")]
@@ -24,8 +16,8 @@ public class MinefieldTrigger : MonoBehaviour
     [SerializeField] private ConditionMode conditionMode = ConditionMode.AND;
 
     [Header("События")]
-    public UnityEvent onConditionMet;   // когда условие выполнено
-    public UnityEvent onConditionLost;  // когда условие перестало выполняться (мейби понадобится)
+    public UnityEvent onConditionMet;   
+    public UnityEvent onConditionLost; 
 
     [Header("Настройки")]
     [Tooltip("Если true — событие сработает только один раз")]
@@ -80,6 +72,5 @@ public class MinefieldTrigger : MonoBehaviour
         }
     }
 
-    // Публичный геттер если другим скриптам нужно проверить состояние
     public bool IsConditionMet => conditionMet;
 }

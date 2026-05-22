@@ -1,16 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// UI с тремя ползунками громкости.
-/// Работает на любой сцене — главное меню, игра, экран поражения.
-///
-/// КАК НАСТРОИТЬ:
-/// 1. Создай три UI Slider'а на Canvas.
-/// 2. Повесь этот скрипт на любой GameObject.
-/// 3. Перетащи слайдеры в поля musicSlider, environmentSlider, voiceSlider.
-/// 4. (Опционально) перетащи три Text/TMP поля для отображения процентов.
-/// </summary>
+
 public class AudioSettingsUI : MonoBehaviour
 {
     [Header("Sliders")]
@@ -27,26 +18,19 @@ public class AudioSettingsUI : MonoBehaviour
     [SerializeField] private GameObject settingsPanel;
 
     private bool _initialized;
+    private bool _isInitializing;
 
-    // ──────────────────────────────────────────────
-    // Lifecycle
-    // ──────────────────────────────────────────────
-
+   
     private void Start()
     {
         InitSliders();
     }
 
-    // AudioManager может появиться позже (DontDestroyOnLoad), подождём
     private void Update()
     {
         if (!_initialized && AudioManager.Instance != null)
             InitSliders();
     }
-
-    // ──────────────────────────────────────────────
-    // Public (вызывай из кнопок: открыть/закрыть)
-    // ──────────────────────────────────────────────
 
     public void ShowSettings()
     {
@@ -67,47 +51,44 @@ public class AudioSettingsUI : MonoBehaviour
         if (!next) AudioManager.Instance?.SaveSettings();
     }
 
-    // ──────────────────────────────────────────────
-    // Slider callbacks (назначь через AddListener или Inspector → OnValueChanged)
-    // ──────────────────────────────────────────────
-
     public void OnMusicSliderChanged(float value)
     {
-        if (AudioManager.Instance == null) return;
+        if (_isInitializing || AudioManager.Instance == null) return; 
         AudioManager.Instance.MusicVolume = value;
         UpdateLabel(musicLabel, value);
     }
 
     public void OnEnvironmentSliderChanged(float value)
     {
-        if (AudioManager.Instance == null) return;
+        if (_isInitializing || AudioManager.Instance == null) return; 
         AudioManager.Instance.EnvironmentVolume = value;
         UpdateLabel(environmentLabel, value);
     }
 
     public void OnVoiceSliderChanged(float value)
     {
-        if (AudioManager.Instance == null) return;
+        if (_isInitializing || AudioManager.Instance == null) return; 
         AudioManager.Instance.VoiceVolume = value;
         UpdateLabel(voiceLabel, value);
     }
-
-    // ──────────────────────────────────────────────
-    // Internals
-    // ──────────────────────────────────────────────
 
     private void InitSliders()
     {
         if (AudioManager.Instance == null) return;
         _initialized = true;
+        _isInitializing = true; 
 
-        SetupSlider(musicSlider,       AudioManager.Instance.MusicVolume,       OnMusicSliderChanged);
-        SetupSlider(environmentSlider, AudioManager.Instance.EnvironmentVolume,  OnEnvironmentSliderChanged);
-        SetupSlider(voiceSlider,       AudioManager.Instance.VoiceVolume,        OnVoiceSliderChanged);
+        SetupSlider(musicSlider, AudioManager.Instance.MusicVolume, OnMusicSliderChanged);
+        SetupSlider(environmentSlider, AudioManager.Instance.EnvironmentVolume, OnEnvironmentSliderChanged);
+        SetupSlider(voiceSlider, AudioManager.Instance.VoiceVolume, OnVoiceSliderChanged);
 
-        UpdateLabel(musicLabel,       AudioManager.Instance.MusicVolume);
+        UpdateLabel(musicLabel, AudioManager.Instance.MusicVolume);
         UpdateLabel(environmentLabel, AudioManager.Instance.EnvironmentVolume);
-        UpdateLabel(voiceLabel,       AudioManager.Instance.VoiceVolume);
+        UpdateLabel(voiceLabel, AudioManager.Instance.VoiceVolume);
+
+        _isInitializing = false; 
+
+        AudioManager.Instance.ApplyAll();
     }
 
     private static void SetupSlider(Slider slider, float value, UnityEngine.Events.UnityAction<float> callback)
@@ -117,10 +98,11 @@ public class AudioSettingsUI : MonoBehaviour
         slider.maxValue = 1f;
         slider.wholeNumbers = false;
         slider.onValueChanged.RemoveAllListeners();
-        slider.value = value; // установка value без вызова callback
+        slider.value = value;
         slider.onValueChanged.AddListener(callback);
     }
-     private static void UpdateLabel(TMPro.TextMeshProUGUI label, float value)
+
+    private static void UpdateLabel(TMPro.TextMeshProUGUI label, float value)
     {
         if (label == null) return;
         label.text = $"{Mathf.RoundToInt(value * 100)}%";

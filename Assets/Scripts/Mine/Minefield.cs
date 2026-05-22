@@ -11,13 +11,11 @@ public class Minefield : MonoBehaviour
     [Header("Радиус соседства (единицы Unity)")]
     [SerializeField] private float neighborRadius = 1.6f;
 
-    // Событие — поле решено
     public UnityEvent onFieldCleared = new UnityEvent();
 
-    // Публичный прогресс для HUD
     public int TotalDangerousMines { get; private set; }
-    public int FlaggedDangerousMines { get; private set; } // правильно отмеченные (для победы)
-    public int TotalFlaggedCells { get; private set; }     // все флаги на поле (для счётчика HUD)
+    public int FlaggedDangerousMines { get; private set; } 
+    public int TotalFlaggedCells { get; private set; }    
     public bool IsCleared { get; private set; } = false;
 
     public event System.Action OnFlagPlaced;
@@ -33,17 +31,12 @@ public class Minefield : MonoBehaviour
         CountDangerousMines();
     }
 
-    // -------------------------------------------------------
-    // Инициализация
-    // -------------------------------------------------------
-
     void CollectCells()
     {
         cells.Clear();
         MineCell[] found = GetComponentsInChildren<MineCell>();
         cells.AddRange(found);
 
-        // Каждая ячейка знает своё поле
         foreach (var cell in cells)
             cell.ParentField = this;
 
@@ -95,10 +88,6 @@ public class Minefield : MonoBehaviour
         return result;
     }
 
-    // -------------------------------------------------------
-    // Взаимодействие
-    // -------------------------------------------------------
-
     public void OnLeftClick(MineCell cell)
     {
         if (cell.isRevealed) return;
@@ -146,10 +135,6 @@ public class Minefield : MonoBehaviour
         CheckProgress();
     }
 
-    // -------------------------------------------------------
-    // Проверка прогресса
-    // -------------------------------------------------------
-
     void CheckProgress()
     {
         if (IsCleared) return;
@@ -160,11 +145,11 @@ public class Minefield : MonoBehaviour
 
         foreach (var cell in cells)
         {
-            if (cell.isFlagged) TotalFlaggedCells++; // считаем ВСЕ флаги для HUD
+            if (cell.isFlagged) TotalFlaggedCells++; 
 
             if (cell.value == 9)
             {
-                if (cell.isFlagged) FlaggedDangerousMines++; // правильно отмеченные
+                if (cell.isFlagged) FlaggedDangerousMines++; 
                 else allSafeRevealed = false;
             }
             else
@@ -175,19 +160,15 @@ public class Minefield : MonoBehaviour
 
         MinefieldHUD.Instance?.UpdateMineCounter(this);
 
-        // Победа только если все опасные отмечены правильно И все безопасные открыты
         if (allSafeRevealed && FlaggedDangerousMines == TotalDangerousMines && TotalFlaggedCells == TotalDangerousMines)
         {
             IsCleared = true;
             Debug.Log($"[Minefield] '{gameObject.name}' очищено!");
-            MinefieldHUD.Instance?.UpdateMineCounter(this); // обновляем HUD уже с IsCleared = true
+            MinefieldHUD.Instance?.UpdateMineCounter(this); 
             onFieldCleared.Invoke();
         }
     }
 
-    // -------------------------------------------------------
-    // Флудфилл
-    // -------------------------------------------------------
 
     void FloodReveal(MineCell startCell)
     {

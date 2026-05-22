@@ -2,21 +2,13 @@ using System;
 using System.IO;
 using UnityEngine;
 
-/// <summary>
-/// Хранит настройки громкости и сериализует их в JSON.
-/// Путь: Application.persistentDataPath/sound_settings.json
-/// </summary>
 [Serializable]
 public class SoundSettings
 {
-    // Значения от 0.0 до 1.0
     public float musicVolume     = 1f;
     public float environmentVolume = 1f;
     public float voiceVolume     = 1f;
 
-    // ──────────────────────────────────────────────
-    // Persistence
-    // ──────────────────────────────────────────────
 
     private static string FilePath =>
         Path.Combine(Application.persistentDataPath, "sound_settings.json");
@@ -24,16 +16,20 @@ public class SoundSettings
     public static SoundSettings Load()
     {
         if (!File.Exists(FilePath))
-            return new SoundSettings(); // дефолтные значения
+        {
+            Debug.Log("[SoundSettings] File not found, using defaults");
+            return new SoundSettings(); 
+        }
 
         try
         {
             string json = File.ReadAllText(FilePath);
+            Debug.Log($"[SoundSettings] Loaded JSON: {json}");
             return JsonUtility.FromJson<SoundSettings>(json) ?? new SoundSettings();
         }
         catch (Exception e)
         {
-            Debug.LogWarning($"[SoundSettings] Не удалось загрузить настройки: {e.Message}");
+            Debug.LogWarning($"[SoundSettings] Load failed: {e.Message}");
             return new SoundSettings();
         }
     }
@@ -43,11 +39,12 @@ public class SoundSettings
         try
         {
             string json = JsonUtility.ToJson(this, prettyPrint: true);
+            Debug.Log($"[SoundSettings] Saving: {json}");
             File.WriteAllText(FilePath, json);
         }
         catch (Exception e)
         {
-            Debug.LogWarning($"[SoundSettings] Не удалось сохранить настройки: {e.Message}");
+            Debug.LogWarning($"[SoundSettings] Save failed: {e.Message}");
         }
     }
 }

@@ -90,7 +90,6 @@ public class PlayerInteraction : MonoBehaviour
             return;
         }
 
-        // Взаимодействие с минным полем
         if (hoveredMine != null)
         {
             Minefield field = hoveredMine.ParentField;

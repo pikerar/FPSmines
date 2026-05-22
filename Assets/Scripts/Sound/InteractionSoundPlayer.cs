@@ -1,9 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// Звуки взаимодействия персонажа с объектами (кнопки, двери, предметы и т.д.)
-/// Категория: Environment — проходит через AudioMixer группу Environment.
-/// </summary>
 public class InteractionSoundPlayer : MonoBehaviour
 {
     [System.Serializable]

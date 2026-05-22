@@ -30,14 +30,12 @@ public class NewPlayerMovement: MonoBehaviour
 
     private CameraLook cameraLook;
     private float defaultMaxY;
-    // Start is called before the first frame update
     void Start()
     {
         cameraLook = GetComponent<CameraLook>(); 
         defaultMaxY = cameraLook.maxY;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (InputLocked)

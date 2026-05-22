@@ -11,8 +11,8 @@ public class CameraLook : MonoBehaviour
     public float maxY = 60f;
 
     [Header("References")]
-    public Transform camHolder;   // перетащи cam holder
-    public Transform camPoint;    // перетащи CamPoint
+    public Transform camHolder; 
+    public Transform camPoint;    
 
     private float rotX = 0f;
     public bool InputLocked { get; set; }

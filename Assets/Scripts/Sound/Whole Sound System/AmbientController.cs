@@ -3,24 +3,14 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 
-/// <summary>
-/// Управляет фоновым эмбиентом/музыкой.
-/// Живёт вместе с AudioManager (DontDestroyOnLoad).
-/// При смене сцены делает кросс-фейд между треками.
-///
-/// КАК НАСТРОИТЬ:
-/// 1. Повесь на тот же GameObject, что и AudioManager.
-/// 2. Заполни список sceneAmbients: для каждой сцены укажи имя сцены и AudioClip.
-/// 3. Если для сцены клипа нет — эмбиент замолкает плавно.
-/// </summary>
 public class AmbientController : MonoBehaviour
 {
     [System.Serializable]
     public struct SceneAmbient
     {
-        public string sceneName;   // точное имя сцены (без пути)
+        public string sceneName; 
         public AudioClip clip;
-        [Range(0f, 1f)] public float volume; // локальная громкость трека (0..1)
+        [Range(0f, 1f)] public float volume;
     }
 
     [Header("Ambient Tracks")]
@@ -29,17 +19,12 @@ public class AmbientController : MonoBehaviour
     [Header("Crossfade")]
     [SerializeField] private float fadeDuration = 1.5f;
 
-    // Два источника для кросс-фейда
     private AudioSource _sourceA;
     private AudioSource _sourceB;
     private bool _usingA = true;
 
     private AudioSource Active   => _usingA ? _sourceA : _sourceB;
     private AudioSource Inactive => _usingA ? _sourceB : _sourceA;
-
-    // ──────────────────────────────────────────────
-    // Lifecycle
-    // ──────────────────────────────────────────────
 
     private void Awake()
     {
@@ -62,18 +47,10 @@ public class AmbientController : MonoBehaviour
         PlayForScene(SceneManager.GetActiveScene().name, fade: false);
     }
 
-    // ──────────────────────────────────────────────
-    // Scene change
-    // ──────────────────────────────────────────────
-
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         PlayForScene(scene.name, fade: true);
     }
-
-    // ──────────────────────────────────────────────
-    // Playback
-    // ──────────────────────────────────────────────
 
     private void PlayForScene(string sceneName, bool fade)
     {
@@ -90,7 +67,6 @@ public class AmbientController : MonoBehaviour
         AudioClip nextClip   = match?.clip;
         float     nextVolume = match?.volume ?? 1f;
 
-        // Если тот же клип — не перезапускаем
         if (Active.clip == nextClip && Active.isPlaying) return;
 
         if (fade)
@@ -111,7 +87,7 @@ public class AmbientController : MonoBehaviour
     {
         AudioSource outgoing = Active;
         _usingA = !_usingA;
-        AudioSource incoming = Active; // теперь это другой
+        AudioSource incoming = Active; 
 
         incoming.clip   = nextClip;
         incoming.volume = 0f;
@@ -137,10 +113,6 @@ public class AmbientController : MonoBehaviour
         if (nextClip != null) incoming.volume = targetVolume;
     }
 
-    // ──────────────────────────────────────────────
-    // Helpers
-    // ──────────────────────────────────────────────
-
     private AudioSource CreateSource(string sourceName)
     {
         var go = new GameObject(sourceName);
@@ -151,8 +123,6 @@ public class AmbientController : MonoBehaviour
         src.playOnAwake = false;
         src.spatialBlend = 0f; // 2D
 
-        // Назначаем в Music группу миксера, когда AudioManager готов
-        // (Awake гарантированно после AudioManager.Awake на том же GO)
         if (AudioManager.Instance != null)
             src.outputAudioMixerGroup = AudioManager.Instance.MusicGroup;
 

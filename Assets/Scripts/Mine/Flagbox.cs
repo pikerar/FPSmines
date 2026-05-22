@@ -59,13 +59,10 @@ public class FlagBox : MonoBehaviour
             Destroy(gameObject);
     }
 
-    // Удаляем объекты флагов пропорционально остатку
     void UpdateFlagVisuals()
     {
         if (flagObjects == null || flagObjects.Length == 0) return;
 
-        // Сколько объектов должно остаться видимым
-        // Пропорционально: если было 5 флагов и осталось 3 — показываем 3 из 5 объектов
         int totalObjects = flagObjects.Length;
         int shouldBeVisible = flagsInBox > 0
             ? Mathf.RoundToInt((float)flagsRemaining / flagsInBox * totalObjects)
@@ -78,7 +75,7 @@ public class FlagBox : MonoBehaviour
             if (i < shouldBeVisible)
                 flagObjects[i].SetActive(true);
             else
-                Destroy(flagObjects[i]); // удаляем со сцены
+                Destroy(flagObjects[i]); 
         }
     }
 }

@@ -1,18 +1,7 @@
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
-/// <summary>
-/// Центральный менеджер звука. Синглтон, переживает смену сцен.
-///
-/// КАК НАСТРОИТЬ В РЕДАКТОРЕ:
-/// 1. Создай GameObject "AudioManager" на сцене MainMenu.
-/// 2. Повесь этот скрипт.
-/// 3. В Project создай Audio Mixer: Assets → Create → Audio Mixer → назови "GameAudioMixer".
-/// 4. В Mixer добавь три дочерние группы: Music, Environment, Voice.
-/// 5. Для каждой группы: выдели → в Inspector нажми на параметр Volume → правой кнопкой → Expose.
-///    Переименуй exposed параметры в: "MusicVolume", "EnvironmentVolume", "VoiceVolume".
-/// 6. Перетащи Mixer и три группы в поля этого компонента в Inspector.
-/// </summary>
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance { get; private set; }
@@ -23,28 +12,23 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioMixerGroup environmentGroup;
     [SerializeField] private AudioMixerGroup voiceGroup;
 
-    // Exposed parameter names в AudioMixer
     private const string MusicParam       = "MusicVolume";
     private const string EnvironmentParam = "EnvironmentVolume";
     private const string VoiceParam       = "VoiceVolume";
 
     public SoundSettings Settings { get; private set; }
 
-    // ──────────────────────────────────────────────
-    // Public accessors для групп (нужны SoundPlayer и AmbientController)
-    // ──────────────────────────────────────────────
     public AudioMixerGroup MusicGroup       => musicGroup;
     public AudioMixerGroup EnvironmentGroup => environmentGroup;
     public AudioMixerGroup VoiceGroup       => voiceGroup;
 
-    // ──────────────────────────────────────────────
-    // Lifecycle
-    // ──────────────────────────────────────────────
-
     private void Awake()
     {
+        Debug.Log($"[AudioManager] Awake. Instance exists: {Instance != null}, this={gameObject.name}");
+
         if (Instance != null && Instance != this)
         {
+            Debug.Log("[AudioManager] Duplicate destroyed");
             Destroy(gameObject);
             return;
         }
@@ -52,15 +36,14 @@ public class AudioManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         Settings = SoundSettings.Load();
+        Debug.Log($"[AudioManager] Loaded settings: music={Settings.musicVolume}");
         ApplyAll();
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void OnApplicationQuit() => Settings.Save();
     private void OnApplicationPause(bool pause) { if (pause) Settings.Save(); }
-
-    // ──────────────────────────────────────────────
-    // Volume API (0..1 → dB)
-    // ──────────────────────────────────────────────
 
     public float MusicVolume
     {
@@ -92,28 +75,32 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    /// <summary>Сохраняет текущие настройки в JSON немедленно.</summary>
     public void SaveSettings() => Settings.Save();
 
-    // ──────────────────────────────────────────────
-    // Internals
-    // ──────────────────────────────────────────────
 
-    private void ApplyAll()
+    public void ApplyAll()
     {
+        Debug.Log($"[AudioManager] ApplyAll: music={Settings.musicVolume}, env={Settings.environmentVolume}, voice={Settings.voiceVolume}");
         SetMixerVolume(MusicParam,       Settings.musicVolume);
         SetMixerVolume(EnvironmentParam, Settings.environmentVolume);
         SetMixerVolume(VoiceParam,       Settings.voiceVolume);
     }
 
-    /// <summary>
-    /// Конвертирует линейное значение (0..1) в децибелы и применяет к миксеру.
-    /// При value == 0 ставим -80 dB (тишина), иначе 20*log10(value).
-    /// </summary>
     private void SetMixerVolume(string paramName, float linearValue)
     {
-        if (masterMixer == null) return;
+        if (masterMixer == null) { Debug.LogWarning("[AudioManager] masterMixer is NULL!"); return; }
         float db = linearValue > 0.0001f ? Mathf.Log10(linearValue) * 20f : -80f;
-        masterMixer.SetFloat(paramName, db);
+        bool ok = masterMixer.SetFloat(paramName, db);
+        Debug.Log($"[AudioManager] SetMixerVolume: {paramName} = {linearValue} → {db}dB, success={ok}");
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        ApplyAll();
     }
 }

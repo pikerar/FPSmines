@@ -2,10 +2,6 @@ using UnityEngine;
 
 public class FootstepSystem : MonoBehaviour
 {
-    // ─────────────────────────────────────────────────────────────
-    //  Inspector fields
-    // ─────────────────────────────────────────────────────────────
-
     [Header("Foot Bones")]
     [Tooltip("Drag the left foot bone transform from your rig")]
     public Transform leftFootBone;
@@ -18,7 +14,7 @@ public class FootstepSystem : MonoBehaviour
     public float rayLength = 1.5f;
 
     [Tooltip("Layer mask for ground objects. Set to 'Default' or create a 'Ground' layer")]
-    public LayerMask groundLayerMask = ~0; // ~0 = everything
+    public LayerMask groundLayerMask = ~0; 
 
     [Tooltip("Distance threshold: foot is considered 'planted' when ray hit distance <= this value")]
     [Range(0.01f, 0.5f)]
@@ -58,16 +54,8 @@ public class FootstepSystem : MonoBehaviour
     [Tooltip("Draw rays in the Scene view while playing")]
     public bool drawDebugRays = true;
 
-    // ─────────────────────────────────────────────────────────────
-    //  Private state
-    // ─────────────────────────────────────────────────────────────
-
     private bool _leftStepped = false;
     private bool _rightStepped = false;
-
-    // ─────────────────────────────────────────────────────────────
-    //  Unity lifecycle
-    // ─────────────────────────────────────────────────────────────
 
     private void Update()
     {
@@ -75,15 +63,6 @@ public class FootstepSystem : MonoBehaviour
         if (rightFootBone != null) ProcessFoot(rightFootBone, ref _rightStepped);
     }
 
-    // ─────────────────────────────────────────────────────────────
-    //  Core logic
-    // ─────────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Casts a ray downward from the foot bone.
-    /// Triggers a footstep sound when the foot is close enough to the ground,
-    /// and resets the trigger when the foot lifts back up.
-    /// </summary>
     private void ProcessFoot(Transform foot, ref bool stepped)
     {
         Vector3 origin = foot.position;
@@ -98,28 +77,20 @@ public class FootstepSystem : MonoBehaviour
 
             if (!stepped && distance <= stepThreshold)
             {
-                // ── Foot has just touched / nearly touched the ground ──
                 stepped = true;
                 PlayFootstep(hit, foot.position);
             }
             else if (stepped && distance > stepThreshold + resetHysteresis)
             {
-                // ── Foot has lifted: allow next step ──
                 stepped = false;
             }
         }
         else
         {
-            // No ground beneath — reset so we don't miss the next landing
             stepped = false;
         }
     }
 
-    /// <summary>
-    /// Selects the correct sound array based on the FootstepSurface
-    /// component found on the hit object, then plays a random clip via SoundPlayer.
-    /// Позиция — точка касания стопы (hit.point), а не позиция персонажа.
-    /// </summary>
     private void PlayFootstep(RaycastHit hit, Vector3 footWorldPos)
     {
         if (SoundPlayer.Instance == null) return;
@@ -132,14 +103,9 @@ public class FootstepSystem : MonoBehaviour
 
         float pitch = Random.Range(pitchRange.x, pitchRange.y);
 
-        // Звук из точки касания стопы — точнее, чем от центра персонажа
         SoundPlayer.Instance.PlayEnvironment(clip, hit.point, volume, pitch);
     }
 
-    /// <summary>
-    /// Reads FootstepSurface from the hit collider (or its parent)
-    /// and returns the matching AudioClip array.
-    /// </summary>
     private AudioClip[] GetClipsForSurface(Collider col)
     {
         FootstepSurface surface = col.GetComponentInParent<FootstepSurface>();
@@ -158,13 +124,6 @@ public class FootstepSystem : MonoBehaviour
         }
     }
 
-    // ─────────────────────────────────────────────────────────────
-    //  Public API
-    // ─────────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Manually fire a footstep at a world position (useful for animation events).
-    /// </summary>
     public void OnFootstepEvent(Vector3 worldPosition)
     {
         Ray ray = new Ray(worldPosition + Vector3.up * 0.1f, Vector3.down);

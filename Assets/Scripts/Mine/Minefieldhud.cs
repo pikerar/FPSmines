@@ -65,10 +65,6 @@ public class MinefieldHUD : MonoBehaviour
         SetHint("");
     }
 
-    // -------------------------------------------------------
-    // Счётчик мин — вызывается MinefieldZone
-    // -------------------------------------------------------
-
     public void ShowMineCounter(Minefield field)
     {
         currentField = field;
@@ -88,9 +84,6 @@ public class MinefieldHUD : MonoBehaviour
         if (mineCounterPanel != null) mineCounterPanel.SetActive(false);
     }
 
-    /// <summary>
-    /// Вызывается из Minefield.CheckProgress() при каждом изменении
-    /// </summary>
     public void UpdateMineCounter(Minefield field)
     {
         if (field != currentField) return;
@@ -118,11 +111,7 @@ public class MinefieldHUD : MonoBehaviour
         }
     }
 
-    // -------------------------------------------------------
-    // Подсказки при наведении
-    // -------------------------------------------------------
-
-    public void UpdateHoverHint(MineCell mine, FlagBox box, InteractableButton button = null)  // ← было BarrierButton
+    public void UpdateHoverHint(MineCell mine, FlagBox box, InteractableButton button = null) 
     {
         if (mine != null && !mine.isRevealed)
         {
@@ -141,10 +130,6 @@ public class MinefieldHUD : MonoBehaviour
         else
             SetHint("");
     }
-
-    // -------------------------------------------------------
-    // Вспомогательные
-    // -------------------------------------------------------
 
     void UpdateFlagCount(int count)
     {
