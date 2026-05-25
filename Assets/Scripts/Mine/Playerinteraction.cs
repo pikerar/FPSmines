@@ -21,7 +21,6 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (playerCamera == null) playerCamera = Camera.main;
         soundPlayer = Object.FindFirstObjectByType<InteractionSoundPlayer>();
-        Debug.Log($"[Interaction] камера: {playerCamera?.gameObject.name}");
     }
 
     void Update()
@@ -44,7 +43,6 @@ public class PlayerInteraction : MonoBehaviour
             if (hit.distance <= interactDistance)
             {
                 newMine = hit.collider.GetComponentInParent<MineCell>();
-                Debug.Log($"[Raycast] MineCell найден: {newMine != null}");
                 if (newMine == null) newBox = hit.collider.GetComponentInParent<FlagBox>();
                 if (newMine == null && newBox == null) newButton = hit.collider.GetComponentInParent<InteractableButton>();
             }
@@ -76,6 +74,12 @@ public class PlayerInteraction : MonoBehaviour
         hoveredBox = newBox;
         hoveredButton = newButton;
 
+        if (hoveredMine != null)
+        {
+            Debug.Log($"[HOVER] MineCell: {hoveredMine.gameObject.name}, value = {hoveredMine.value}");
+        }
+        
+
         MinefieldHUD.Instance?.UpdateHoverHint(hoveredMine, hoveredBox, hoveredButton);
     }
 
@@ -103,7 +107,6 @@ public class PlayerInteraction : MonoBehaviour
             else if (input.RightClickDown)
             {
                 field.OnRightClick(hoveredMine);
-                soundPlayer?.Play("mine_right_click");
             }
         }
     }

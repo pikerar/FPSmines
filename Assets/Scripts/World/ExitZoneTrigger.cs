@@ -16,7 +16,6 @@ public class ExitZoneTrigger : MonoBehaviour
     [SerializeField] private TMP_Text countdownLabel;     // UI-текст таймера
     [SerializeField] private GameObject countdownPanel;   // панель (можно null)
 
-    private bool playerInZone = false;
     private bool isCountingDown = false;
     private Coroutine countdownCoroutine;
 
@@ -25,7 +24,6 @@ public class ExitZoneTrigger : MonoBehaviour
         if (!other.CompareTag("Player")) return;
         if (!minefieldTrigger.IsConditionMet) return;
 
-        playerInZone = true;
 
         if (!isCountingDown)
             countdownCoroutine = StartCoroutine(Countdown());
@@ -35,7 +33,6 @@ public class ExitZoneTrigger : MonoBehaviour
     {
         if (!other.CompareTag("Player")) return;
 
-        playerInZone = false;
 
         // игрок вышел из зоны — сбрасываем таймер
         if (countdownCoroutine != null)
