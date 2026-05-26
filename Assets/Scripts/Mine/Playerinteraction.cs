@@ -5,16 +5,14 @@ public class PlayerInteraction : MonoBehaviour
     [Header("Дистанция луча (максимум видимости)")]
     [SerializeField] private float rayDistance;
 
-    [Header("Дистанция взаимодействия (подсказка + клики)")]
-    [SerializeField] private float interactDistance;
-
     [Header("Камера (если не назначена — ищет Camera.main)")]
     [SerializeField] private Camera playerCamera;
 
     private InteractionSoundPlayer soundPlayer;
     private MineCell hoveredMine;
     private FlagBox hoveredBox;
-    private InteractableButton hoveredButton;  
+    private InteractableButton hoveredButton;
+    private IInteractable hoveredInteractable;
     private Minefield subscribedField;
 
     void Start()
@@ -40,11 +38,16 @@ public class PlayerInteraction : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, rayDistance))
         {
-            if (hit.distance <= interactDistance)
+            if (hit.distance <= rayDistance)
             {
                 newMine = hit.collider.GetComponentInParent<MineCell>();
                 if (newMine == null) newBox = hit.collider.GetComponentInParent<FlagBox>();
                 if (newMine == null && newBox == null) newButton = hit.collider.GetComponentInParent<InteractableButton>();
+                IInteractable newInteractable = null;
+                if (newMine == null && newBox == null && newButton == null)
+                {
+                    newInteractable = hit.collider.GetComponent<IInteractable>();
+                }
             }
         }
 
@@ -91,6 +94,12 @@ public class PlayerInteraction : MonoBehaviour
         if (hoveredButton != null && input.InteractPressed)
         {
             hoveredButton.Activate();
+            return;
+        }
+
+        if (hoveredInteractable != null && input.InteractPressed)
+        {
+            hoveredInteractable.Interact();
             return;
         }
 

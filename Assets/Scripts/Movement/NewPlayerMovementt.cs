@@ -64,6 +64,12 @@ public class NewPlayerMovement: MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Tab))
             {
+                if (KPKUnlockManager.Instance != null && !KPKUnlockManager.Instance.CanUseKPK())
+                {
+                    Debug.Log("[NewPlayerMove] кпк еще не найден");
+                    return;
+                }
+
                 tabletOut = !tabletOut;
                 if (tabletOut)
                 {
