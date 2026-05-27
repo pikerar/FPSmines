@@ -95,94 +95,33 @@ public class TabletSpawner : MonoBehaviour
 
     void Start()
     {
-        Debug.Log($"[TabletSpawner] === ПРОВЕРКА НА СТАРТЕ ===");
-        Debug.Log($"[TabletSpawner] tabletPlace: {(tabletPlace != null ? tabletPlace.name : "NULL")}");
-        Debug.Log($"[TabletSpawner] tabletModel: {(tabletModel != null ? tabletModel.name : "NULL")}");
-        Debug.Log($"[TabletSpawner] tabletModelHolder: {(tabletModelHolder != null ? tabletModelHolder.name : "NULL")}");
-        Debug.Log($"[TabletSpawner] beepAudioSource: {(beepAudioSource != null ? beepAudioSource.name : "NULL")}");
-        Debug.Log($"[TabletSpawner] pickupAudioSource: {(pickupAudioSource != null ? pickupAudioSource.name : "NULL")}");
-        Debug.Log($"[TabletSpawner] playerHoldPoint: {(playerHoldPoint != null ? playerHoldPoint.name : "NULL")}");
+
     }
 
     public void SpawnTablet()
     {
-        Debug.Log($"[TabletSpawner] === SPAWNTABLET ВЫЗВАН ===");
-
-        if (isSpawned)
-        {
-            Debug.Log("[TabletSpawner] Уже заспавнено, пропускаем.");
-            return;
-        }
-
-        // === ЗАЩИТА ОТ NULL ===
-        if (tabletPlace == null)
-        {
-            Debug.LogError("[TabletSpawner] ❌ tabletPlace = NULL! Ссылка не назначена в инспекторе и объект 'TabletPlace' не найден в сцене.");
-            Debug.LogError("[TabletSpawner] Убедись что:");
-            Debug.LogError("  1. В сцене есть объект с именем 'TabletPlace'");
-            Debug.LogError("  2. TabletSpawner назначен на объект Minefield");
-            Debug.LogError("  3. В инспекторе TabletSpawner поле 'Tablet Place' заполнено");
-            return;
-        }
-
-        if (tabletModel == null)
-        {
-            Debug.LogError("[TabletSpawner] ❌ tabletModel = NULL! Назначи [PLAYER] Kpk_obj в инспекторе.");
-            return;
-        }
-
-        if (tabletModelHolder == null)
-        {
-            Debug.LogError("[TabletSpawner] ❌ tabletModelHolder = NULL! Создай дочерний 'TabletModelHolder' внутри TabletPlace.");
-            return;
-        }
-
-        if (playerHoldPoint == null)
-        {
-            Debug.LogError("[TabletSpawner] ❌ playerHoldPoint = NULL! Создай 'Tablet_HoldPoint' на персонаже.");
-            return;
-        }
-        // =====================
-
-        // Перемещаем модель КПК внутрь TabletPlace
         tabletModel.SetParent(tabletModelHolder, false);
         tabletModel.localPosition = Vector3.zero;
         tabletModel.localRotation = Quaternion.identity;
-        Debug.Log($"[TabletSpawner] Модель перемещена в {tabletModelHolder.name}");
 
-        // Активируем TabletPlace
         tabletPlace.SetActive(true);
-        Debug.Log($"[TabletSpawner] TabletPlace активирован!");
 
-        // Проигрываем звук пиликанья
         if (beepAudioSource != null)
         {
             beepAudioSource.Play();
-            Debug.Log("[TabletSpawner] Beep запущен.");
         }
         else
         {
             Debug.LogWarning("[TabletSpawner] Beep AudioSource не назначен.");
         }
 
-        // Добавляем компонент взаимодействия на TabletPlace
-        var interactable = tabletPlace.GetComponent < TabletInteractable > ();
-        if (interactable == null)
-        {
-            interactable = tabletPlace.AddComponent < TabletInteractable > ();
-            Debug.Log("[TabletSpawner] TabletInteractable добавлен.");
-        }
-        interactable.Setup(this, interactHint);
-
         isSpawned = true;
-        Debug.Log("[TabletSpawner] ✅ КПК заспавнен!");
     }
 
     public void PickUpTablet()
     {
         if (isPickedUp) return;
 
-        Debug.Log("[TabletSpawner] PickUpTablet вызван!");
 
         if (beepAudioSource != null) beepAudioSource.Stop();
         if (pickupAudioSource != null) pickupAudioSource.Play();
@@ -202,6 +141,5 @@ public class TabletSpawner : MonoBehaviour
         KPKUnlockManager.Instance?.UnlockKPK();
 
         isPickedUp = true;
-        Debug.Log("[TabletSpawner] ✅ КПК подобран! Tab разблокирован.");
     }
 }
