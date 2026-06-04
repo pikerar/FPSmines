@@ -1,34 +1,35 @@
 using UnityEngine;
+using UnityEngine.Audio;
 
 [RequireComponent(typeof(AudioSource))]
 public class Sound3DPlayer : MonoBehaviour
 {
-    [Header("Настройки звука")]
-    [Tooltip("Аудиоклип для проигрывания")]
+    [Header("Клип")]
     public AudioClip soundClip;
-
-    [Tooltip("Проигрывать ли звук при старте")]
     public bool playOnStart = true;
 
-    [Tooltip("Проигрывать ли звук в цикле")]
-    public bool loop = false;
+    [Header("Микшер")]
+    [Tooltip("Группа микшера (Ambience, Music, Voice, SFX)")]
+    public AudioMixerGroup mixerGroup; 
 
-    [Tooltip("Громкость (0-1)")]
-    [Range(0f, 1f)]
-    public float volume = 1f;
+    [Header("3D настройки")]
+    public float minDistance = 1f;
+    public float maxDistance = 50f;
+    public AudioRolloffMode rolloffMode = AudioRolloffMode.Linear;
+
+    [Header("Остальное")]
+    public bool loop = false;
+    [Range(0f, 1f)] public float volume = 1f;
 
     private AudioSource source;
 
     void Start()
     {
-        source = GetComponent < AudioSource > ();
-
+        source = GetComponent<AudioSource>();
         SetupAudioSource();
 
         if (playOnStart && soundClip != null)
-        {
             Play();
-        }
     }
 
     void SetupAudioSource()
@@ -36,9 +37,9 @@ public class Sound3DPlayer : MonoBehaviour
         source.spatialBlend = 1f;
         source.spatialize = true;
 
-        source.minDistance = 1f;
-        source.maxDistance = 50f;
-        source.rolloffMode = AudioRolloffMode.Linear;
+        source.minDistance = minDistance;
+        source.maxDistance = maxDistance;
+        source.rolloffMode = rolloffMode;
 
         source.dopplerLevel = 1f;
         source.spread = 0f;
@@ -46,6 +47,9 @@ public class Sound3DPlayer : MonoBehaviour
         source.volume = volume;
         source.loop = loop;
         source.playOnAwake = false;
+
+        if (mixerGroup != null)
+            source.outputAudioMixerGroup = mixerGroup;
     }
 
     public void Play()
