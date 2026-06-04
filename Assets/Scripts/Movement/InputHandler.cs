@@ -27,6 +27,8 @@ public class InputHandler : MonoBehaviour
     public bool LeftClickDown { get; private set; }
     public bool RightClickDown { get; private set; }
 
+    public bool IsInputBlocked => PauseMenu.Instance != null && PauseMenu.Instance.IsPaused;
+
     void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
@@ -35,6 +37,18 @@ public class InputHandler : MonoBehaviour
 
     void Update()
     {
+        if (IsInputBlocked)
+        {
+            Horizontal = 0f;
+            Vertical = 0f;
+            JumpPressed = false;
+            JumpHeld = false;
+            InteractPressed = false;
+            LeftClickDown = false;
+            RightClickDown = false;
+            return;
+        }
+
         Horizontal = Input.GetAxisRaw("Horizontal");
         Vertical = Input.GetAxisRaw("Vertical");
 

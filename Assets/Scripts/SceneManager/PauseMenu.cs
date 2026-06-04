@@ -3,11 +3,22 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
+    public static PauseMenu Instance { get; private set; }
+
     [SerializeField] private GameObject pauseRoot;
     [SerializeField] private NewPlayerMovement playerMovement;
     [SerializeField] private CameraLook cameraLook;
 
+    [SerializeField] private PlayerInteraction playerInteraction;
+
     private bool isPaused;
+    public bool IsPaused => isPaused;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
+        Instance = this; 
+    }
 
     private void Update()
     {

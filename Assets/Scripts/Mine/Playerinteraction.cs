@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PlayerInteraction : MonoBehaviour
 {
@@ -90,6 +91,9 @@ public class PlayerInteraction : MonoBehaviour
     {
         var input = InputHandler.Instance;
         if (input == null) return;
+
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            return;
 
         if (hoveredButton != null && input.InteractPressed)
         {
