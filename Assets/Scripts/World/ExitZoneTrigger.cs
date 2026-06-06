@@ -64,6 +64,9 @@ public class ExitZoneTrigger : MonoBehaviour
         if (countdownLabel != null)
             countdownLabel.text = "Загрузка...";
 
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         SceneManager.LoadScene(endSceneName);
     }
 

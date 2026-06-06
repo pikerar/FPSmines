@@ -14,7 +14,7 @@ public class CameraLook : MonoBehaviour
     public Transform camHolder; 
     public Transform camPoint;    
 
-    private float rotX = 0f;
+    public float rotX = 0f;
     public bool InputLocked { get; set; }
     private void Start()
     {
@@ -25,6 +25,9 @@ public class CameraLook : MonoBehaviour
     private void Update()
     {
         if (InputLocked)
+            return;
+
+        if (InputHandler.Instance == null || InputHandler.Instance.IsInputBlocked)
             return;
 
         float mouseX = Input.GetAxisRaw("Mouse X") * sensitivityX;

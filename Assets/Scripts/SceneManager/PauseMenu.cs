@@ -42,6 +42,7 @@ public class PauseMenu : MonoBehaviour
             cameraLook.InputLocked = true;
 
         Time.timeScale = 0f;
+        AudioListener.pause = true;
 
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
@@ -54,6 +55,7 @@ public class PauseMenu : MonoBehaviour
         pauseRoot.SetActive(false);
 
         Time.timeScale = 1f;
+        AudioListener.pause = false;
 
         if (playerMovement != null)
             playerMovement.InputLocked = false;
@@ -70,6 +72,7 @@ public class PauseMenu : MonoBehaviour
     public void ExitToMainMenu()
     {
         Time.timeScale = 1f;
+        AudioListener.pause = false;
         SceneManager.LoadScene("MainMenu");
     }
 }

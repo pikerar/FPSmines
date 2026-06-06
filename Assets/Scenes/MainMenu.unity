@@ -390,7 +390,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: verson 0.0.1 test
+  m_text: verson 0.0.5 gameplay
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 59bf134900b57d04280ccb51720ec547, type: 2}
   m_sharedMaterial: {fileID: -3682141869125318213, guid: 59bf134900b57d04280ccb51720ec547, type: 2}

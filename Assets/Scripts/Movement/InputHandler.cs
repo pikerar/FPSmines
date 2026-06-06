@@ -27,6 +27,9 @@ public class InputHandler : MonoBehaviour
     public bool LeftClickDown { get; private set; }
     public bool RightClickDown { get; private set; }
 
+    public float MouseX { get; private set; }
+    public float MouseY { get; private set; }
+
     public bool IsInputBlocked => PauseMenu.Instance != null && PauseMenu.Instance.IsPaused;
 
     void Awake()
@@ -46,8 +49,13 @@ public class InputHandler : MonoBehaviour
             InteractPressed = false;
             LeftClickDown = false;
             RightClickDown = false;
+            MouseX = 0f;
+            MouseY = 0f;
             return;
         }
+
+        MouseX = Input.GetAxisRaw("Mouse X");
+        MouseY = Input.GetAxisRaw("Mouse Y");
 
         Horizontal = Input.GetAxisRaw("Horizontal");
         Vertical = Input.GetAxisRaw("Vertical");
