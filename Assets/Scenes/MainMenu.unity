@@ -268,7 +268,7 @@ GameObject:
   - component: {fileID: 63888664}
   - component: {fileID: 63888663}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -286,8 +286,8 @@ RectTransform:
   m_LocalScale: {x: 0.0048010303, y: 0.28551, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1773496579}
   - {fileID: 90680685}
+  - {fileID: 1773496579}
   m_Father: {fileID: 1786191343}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -344,6 +344,7 @@ GameObject:
   - component: {fileID: 90680685}
   - component: {fileID: 90680687}
   - component: {fileID: 90680686}
+  - component: {fileID: 90680688}
   m_Layer: 5
   m_Name: Version
   m_TagString: Untagged
@@ -390,7 +391,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: verson 0.0.5 gameplay
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 59bf134900b57d04280ccb51720ec547, type: 2}
   m_sharedMaterial: {fileID: -3682141869125318213, guid: 59bf134900b57d04280ccb51720ec547, type: 2}
@@ -470,6 +471,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 90680684}
   m_CullTransparentMesh: 1
+--- !u!114 &90680688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 90680684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfd41fa41fb9afc4b8458cf3ea12e9e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  format: v{0}
+  isDevBuild: 1
+  devSuffix: db
 --- !u!1 &137849758
 GameObject:
   m_ObjectHideFlags: 0
