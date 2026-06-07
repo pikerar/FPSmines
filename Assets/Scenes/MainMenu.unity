@@ -484,7 +484,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   format: v{0}
-  isDevBuild: 1
+  isDevBuild: 0
   devSuffix: db
 --- !u!1 &137849758
 GameObject:
