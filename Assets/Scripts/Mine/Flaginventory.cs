@@ -61,4 +61,10 @@ public class FlagInventory : MonoBehaviour
         onFlagsChanged.Invoke(CurrentFlags);
         return added;
     }
+
+    public void RestoreFlags(int amount)
+    {
+        CurrentFlags = Mathf.Clamp(amount, 0, maxFlags);
+        onFlagsChanged.Invoke(CurrentFlags);
+    }
 }

@@ -78,4 +78,5 @@ public class FlagBox : MonoBehaviour
                 Destroy(flagObjects[i]); 
         }
     }
+
 }

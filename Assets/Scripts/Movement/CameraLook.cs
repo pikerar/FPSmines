@@ -11,11 +11,18 @@ public class CameraLook : MonoBehaviour
     public float maxY = 60f;
 
     [Header("References")]
-    public Transform camHolder; 
-    public Transform camPoint;    
+    public Transform camHolder;
+    public Transform camPoint;
 
     public float rotX = 0f;
-    public bool InputLocked { get; set; }
+
+    public bool InputLocked
+    {
+        get => _inputLocked || InputBlocker.IsBlocked;
+        set => _inputLocked = value;
+    }
+    private bool _inputLocked;
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -25,9 +32,6 @@ public class CameraLook : MonoBehaviour
     private void Update()
     {
         if (InputLocked)
-            return;
-
-        if (InputHandler.Instance == null || InputHandler.Instance.IsInputBlocked)
             return;
 
         float mouseX = Input.GetAxisRaw("Mouse X") * sensitivityX;

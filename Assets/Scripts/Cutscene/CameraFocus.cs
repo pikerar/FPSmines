@@ -5,43 +5,33 @@ public enum FocusEndMode { ByTime, ByStop }
 
 public class CameraFocus : MonoBehaviour
 {
-    [Header("Ссылки — под твою структуру")]
-    public Transform playerRoot;          // GameObject с CameraLook (крутится по Y)
-    public Transform camHolder;           // крутится по X (вертикаль)
-    public CameraLook cameraLook;         // чтобы восстановить rotX после фокуса
+    [Header("Ссылки")]
+    public Transform playerRoot;
+    public Transform camHolder;
+    public CameraLook cameraLook;
     public NewPlayerMovement playerMovement;
 
-    [Header("Режим завершения")]
+    [Header("Настройки")]
     public FocusEndMode endMode = FocusEndMode.ByTime;
     public float focusDuration = 5f;
-
-    [Header("Скорость")]
     public float lookSpeed = 1.0f;
     public float returnSpeed = 0.7f;
-
-    [Header("Обзор во время фокуса")]
     public float maxLookOffset = 30f;
     public float headReturnSpeed = 3f;
 
     public System.Action OnFocusStarted;
     public System.Action OnFocusEnded;
 
-    // сохранённые углы до фокуса
-    private float _savedRootY;       // горизонталь playerRoot
-    private float _savedCamX;        // вертикаль camHolder (= rotX в CameraLook)
+    public bool IsFocused => _focused;
 
-    // целевые углы фокуса
+    private float _savedRootY;
+    private float _savedCamX;
     private float _targetRootY;
     private float _targetCamX;
-
-    // текущее отклонение головой во время фокуса
-    private float _offsetY = 0f;
-    private float _offsetX = 0f;
-
-    private bool _focused = false;
+    private float _offsetY;
+    private float _offsetX;
+    private bool _focused;
     private Coroutine _focusCoroutine;
-
-    // ── публичные методы ─────────────────────────────
 
     public void StartFocus(Transform target)
     {
@@ -56,34 +46,29 @@ public class CameraFocus : MonoBehaviour
         StartCoroutine(EndFocus());
     }
 
-    // ── корутины ─────────────────────────────────────
-
     IEnumerator RunFocus(Transform target)
     {
         _focused = true;
 
-        // Блокируем ввод через твои скрипты
-        cameraLook.InputLocked = true;
-        playerMovement.InputLocked = true;
+        // БЛОКИРУЕМ ЧЕРЕЗ МЕНЕДЖЕР
+        InputBlocker.Block("CameraFocus");
 
-        // Запоминаем текущие углы
+        // Запоминаем углы
         _savedRootY = playerRoot.eulerAngles.y;
-        _savedCamX = cameraLook.rotX;   // нужно сделать rotX публичным — см. ниже
+        _savedCamX = cameraLook.rotX;
 
-        // Считаем нужные углы чтобы смотреть на target
+        // Считаем целевые углы
         Vector3 dir = target.position - camHolder.position;
         Quaternion lookRot = Quaternion.LookRotation(dir);
 
         _targetRootY = lookRot.eulerAngles.y;
-        // конвертируем pitch в диапазон [-180, 180]
         float pitch = lookRot.eulerAngles.x;
         if (pitch > 180f) pitch -= 360f;
-        _targetCamX = pitch;   // CameraLook хранит rotX инвертированным
+        _targetCamX = pitch;
 
         _offsetY = 0f;
         _offsetX = 0f;
 
-        // Плавный поворот к цели
         yield return SmoothLook(_savedRootY, _savedCamX, _targetRootY, _targetCamX, lookSpeed);
 
         OnFocusStarted?.Invoke();
@@ -93,21 +78,19 @@ public class CameraFocus : MonoBehaviour
             yield return new WaitForSeconds(focusDuration);
             yield return EndFocus();
         }
-        // ByStop — ждём StopFocus() снаружи
     }
 
     IEnumerator EndFocus()
     {
-        // Возвращаемся к сохранённым углам
         float fromY = playerRoot.eulerAngles.y;
         float fromX = cameraLook.rotX;
 
         yield return SmoothLook(fromY, fromX, _savedRootY, _savedCamX, returnSpeed);
 
-        // Восстанавливаем rotX в CameraLook чтобы не было рывка
         cameraLook.rotX = _savedCamX;
-        cameraLook.InputLocked = false;
-        playerMovement.InputLocked = false;
+
+        // РАЗБЛОКИРУЕМ ЧЕРЕЗ МЕНЕДЖЕР
+        InputBlocker.Unblock("CameraFocus");
 
         _focused = false;
         OnFocusEnded?.Invoke();
@@ -118,7 +101,9 @@ public class CameraFocus : MonoBehaviour
         float e = 0f;
         while (e < duration)
         {
-            e += Time.deltaTime;
+            // Time.timeScale = 0 во время паузы — корутины НЕ работают
+            // Но если пауза закроется, продолжим с того же места
+            e += Time.unscaledDeltaTime;
             float t = Mathf.SmoothStep(0f, 1f, e / duration);
 
             float y = Mathf.LerpAngle(fromY, toY, t);
@@ -132,22 +117,19 @@ public class CameraFocus : MonoBehaviour
 
     void ApplyAngles(float rootY, float camX)
     {
-        // Горизонталь — крутим весь playerRoot
         Vector3 re = playerRoot.eulerAngles;
         playerRoot.eulerAngles = new Vector3(re.x, rootY, re.z);
-
-        // Вертикаль — крутим camHolder
         camHolder.localRotation = Quaternion.Euler(camX, 0f, 0f);
-
-        // Синхронизируем rotX в CameraLook
         cameraLook.rotX = camX;
     }
-
-    // ── обзор головой во время фокуса ────────────────
 
     void Update()
     {
         if (!_focused) return;
+
+        // Осмотр головой только если фокус — единственная блокировка инпута
+        if (InputBlocker.IsBlocked && !InputBlocker.IsBlockedBy("CameraFocus"))
+            return;
 
         float mx = Input.GetAxisRaw("Mouse X") * 2f;
         float my = Input.GetAxisRaw("Mouse Y") * 2f;
@@ -162,8 +144,8 @@ public class CameraFocus : MonoBehaviour
 
         if (!moving)
         {
-            _offsetY = Mathf.MoveTowards(_offsetY, 0f, Time.deltaTime * headReturnSpeed * 20f);
-            _offsetX = Mathf.MoveTowards(_offsetX, 0f, Time.deltaTime * headReturnSpeed * 20f);
+            _offsetY = Mathf.MoveTowards(_offsetY, 0f, Time.unscaledDeltaTime * headReturnSpeed * 20f);
+            _offsetX = Mathf.MoveTowards(_offsetX, 0f, Time.unscaledDeltaTime * headReturnSpeed * 20f);
         }
 
         ApplyAngles(_targetRootY + _offsetY, _targetCamX + _offsetX);

@@ -197,4 +197,7 @@ public class Minefield : MonoBehaviour
     }
 
     public List<MineCell> GetAllCells() => cells;
+
+
+
 }

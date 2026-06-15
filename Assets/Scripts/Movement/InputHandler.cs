@@ -1,9 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// ќтдельный скрипт дл€ обработки ввода.
-/// ѕрикрепи на тот же GameObject что и PlayerMovement.
-/// </summary>
 public class InputHandler : MonoBehaviour
 {
     public static InputHandler Instance { get; private set; }
@@ -11,6 +7,7 @@ public class InputHandler : MonoBehaviour
     [Header("Keybinds")]
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
     [SerializeField] private KeyCode interactKey = KeyCode.E;
+    [SerializeField] private KeyCode pauseKey = KeyCode.Escape;
 
     // ƒвижение
     public float Horizontal { get; private set; }
@@ -30,7 +27,11 @@ public class InputHandler : MonoBehaviour
     public float MouseX { get; private set; }
     public float MouseY { get; private set; }
 
-    public bool IsInputBlocked => PauseMenu.Instance != null && PauseMenu.Instance.IsPaused;
+    // ѕауза Ч отдельно, потому что меню паузы должно работать всегда
+    public bool PausePressed { get; private set; }
+
+    // ”Ќ»¬≈–—јЋ№Ќјя проверка блокировки
+    public bool IsInputBlocked => InputBlocker.IsBlocked;
 
     void Awake()
     {
@@ -40,8 +41,12 @@ public class InputHandler : MonoBehaviour
 
     void Update()
     {
+        // ѕауза работает ¬—≈√ƒј, даже при блокировке
+        PausePressed = Input.GetKeyDown(pauseKey);
+
         if (IsInputBlocked)
         {
+            // —брасываем весь игровой инпут, но PausePressed уже записан
             Horizontal = 0f;
             Vertical = 0f;
             JumpPressed = false;
@@ -54,13 +59,14 @@ public class InputHandler : MonoBehaviour
             return;
         }
 
+        // ќбычный инпут
         MouseX = Input.GetAxisRaw("Mouse X");
         MouseY = Input.GetAxisRaw("Mouse Y");
 
         Horizontal = Input.GetAxisRaw("Horizontal");
         Vertical = Input.GetAxisRaw("Vertical");
 
-        JumpPressed = Input.GetKey(jumpKey);
+        JumpPressed = Input.GetKeyDown(jumpKey);
         JumpHeld = Input.GetKey(jumpKey);
 
         InteractPressed = Input.GetKeyDown(interactKey);

@@ -1,10 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class NewPlayerMovement: MonoBehaviour
+public class NewPlayerMovement : MonoBehaviour
 {
-
     public CharacterController controller;
     public Transform GroundCheck;
     public LayerMask groundMask;
@@ -18,26 +16,34 @@ public class NewPlayerMovement: MonoBehaviour
     public GameObject cam;
     public GameObject maincam;
     public GameObject tablet;
-    
+
     public Vector3 velocity;
     public Vector3 move;
     public bool isGrounded;
 
-    public bool InputLocked { get; set; }
+    // ← ИЗМЕНЕНИЕ: property теперь проверяет и InputBlocker
+    public bool InputLocked
+    {
+        get => _inputLocked || InputBlocker.IsBlocked;
+        set => _inputLocked = value;
+    }
+    private bool _inputLocked;
 
     private Coroutine hideCoroutine;
     private bool tabletOut = false;
 
     private CameraLook cameraLook;
     private float defaultMaxY;
+
     void Start()
     {
-        cameraLook = GetComponent<CameraLook>(); 
+        cameraLook = GetComponent<CameraLook>();
         defaultMaxY = cameraLook.maxY;
     }
 
     void Update()
     {
+        // ← Эта проверка теперь ловит ИИИ InputLocked=true, ИИИ любой блокиратор
         if (InputLocked)
         {
             anim.SetFloat("X", 0f);
@@ -45,49 +51,48 @@ public class NewPlayerMovement: MonoBehaviour
             return;
         }
 
+        // ... остальной код без изменений ...
+
         if (controller.isGrounded)
         {
             anim.SetFloat("X", Input.GetAxis("Horizontal"));
             anim.SetFloat("Y", Input.GetAxis("Vertical"));
-
         }
-        
+
         isGrounded = Physics.CheckSphere(GroundCheck.position, groundDistance, groundMask);
-        
+
         if (isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;
         }
+
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
-            if (Input.GetKeyDown(KeyCode.Tab))
+            if (KPKUnlockManager.Instance != null && !KPKUnlockManager.Instance.CanUseKPK())
             {
-                if (KPKUnlockManager.Instance != null && !KPKUnlockManager.Instance.CanUseKPK())
-                {
-                    Debug.Log("[NewPlayerMove] кпк еще не найден");
-                    return;
-                }
-
-                tabletOut = !tabletOut;
-                if (tabletOut)
-                {
-                    if (hideCoroutine != null) StopCoroutine(hideCoroutine);
-                    tablet.SetActive(true);
-                }
-                else
-                {
-                    if (hideCoroutine != null) StopCoroutine(hideCoroutine);
-                    hideCoroutine = StartCoroutine(HideTabletDelayed());
-                }
+                Debug.Log("[NewPlayerMove] кпк еще не найден");
+                return;
             }
-                
 
-            float current = anim.GetLayerWeight(1);
-            float target = tabletOut ? 1f : 0f;
-            anim.SetLayerWeight(1, Mathf.MoveTowards(current, target, Time.deltaTime * 5f));
+            tabletOut = !tabletOut;
+            if (tabletOut)
+            {
+                if (hideCoroutine != null) StopCoroutine(hideCoroutine);
+                tablet.SetActive(true);
+            }
+            else
+            {
+                if (hideCoroutine != null) StopCoroutine(hideCoroutine);
+                hideCoroutine = StartCoroutine(HideTabletDelayed());
+            }
         }
+
+        float current = anim.GetLayerWeight(1);
+        float target = tabletOut ? 1f : 0f;
+        anim.SetLayerWeight(1, Mathf.MoveTowards(current, target, Time.deltaTime * 5f));
 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
@@ -105,17 +110,16 @@ public class NewPlayerMovement: MonoBehaviour
         controller.Move(move * speed * Time.deltaTime);
         velocity.y -= gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
-        
+
         if (Input.GetKey("c"))
         {
             controller.height = 1f;
         }
-        
         else
         {
             controller.height = 1.79f;
         }
-        
+
         if (Input.GetKey("left shift"))
         {
             speed = 7f;
@@ -123,7 +127,6 @@ public class NewPlayerMovement: MonoBehaviour
             cam.SetActive(true);
             maincam.SetActive(false);
         }
-        
         else
         {
             speed = 3f;
@@ -131,6 +134,7 @@ public class NewPlayerMovement: MonoBehaviour
             maincam.SetActive(true);
         }
     }
+
     private IEnumerator HideTabletDelayed()
     {
         yield return new WaitForSeconds(tabletHideDelay);

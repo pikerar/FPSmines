@@ -78,4 +78,10 @@ public class InteractableButton : MonoBehaviour
             entry.action?.Invoke();
         }
     }
+
+    public void ForceActivated()
+    {
+        IsActivated = true;
+    }
+
 }

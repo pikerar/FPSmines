@@ -20,10 +20,6 @@ public class TabletSpawner : MonoBehaviour
     [Header("Точка удержания в руке персонажа")]
     [SerializeField] private Transform playerHoldPoint;
 
-    [Header("Подсказка при наведении")]
-    [SerializeField] private string interactHint = "E - подобрать";
-
-    private bool isSpawned = false;
     private bool isPickedUp = false;
 
     void Awake()
@@ -115,7 +111,6 @@ public class TabletSpawner : MonoBehaviour
             Debug.LogWarning("[TabletSpawner] Beep AudioSource не назначен.");
         }
 
-        isSpawned = true;
     }
 
     public void PickUpTablet()
